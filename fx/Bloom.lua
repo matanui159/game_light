@@ -19,7 +19,7 @@ function Bloom:new()
 				result += Texel(image, coord + vec2(+1.0, -1.0) * offset);
 				result += Texel(image, coord + vec2(+1.0, +1.0) * offset);
 				result += Texel(image, coord + vec2(-1.0, +1.0) * offset);
-				return result / 4.0 * color;
+				return result / 4.0;
 			}
 		]])
 		Bloom.blur.c1 = love.graphics.newCanvas(width, height)

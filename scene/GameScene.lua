@@ -12,22 +12,15 @@ end
 function GameScene:update()
 end
 
-function GameScene:preDraw()
+function GameScene:draw()
 	self.bloom:preDraw()
 	love.graphics.push()
 	love.graphics.scale(love.graphics.getWidth() / 16, love.graphics.getHeight() / 9)
 
 	self.map:draw()
-end
 
-function GameScene:postDraw()
 	love.graphics.pop()
 	self.bloom:postDraw()
-end
-
-function GameScene:draw()
-	self:preDraw()
-	self:postDraw()
 end
 
 return GameScene
