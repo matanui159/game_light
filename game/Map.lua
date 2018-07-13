@@ -12,9 +12,15 @@ function Map:getTile(x, y)
 end
 
 function Map:new(world, name)
+	if not Map.load then
+		Map.tiles = love.graphics.newImage("assets/tiles.png")
+		Map.tiles:setFilter("nearest")
+		Map.load = true
+	end
+
 	self.data = love.image.newImageData("assets/maps/" .. name .. ".png")
 	self.body = love.physics.newBody(world)
-	self.batch = love.graphics.newSpriteBatch(res.tiles, WIDTH * HEIGHT, "static")
+	self.batch = love.graphics.newSpriteBatch(Map.tiles, WIDTH * HEIGHT, "static")
 
 	for x = 0, WIDTH - 1 do
 		for y = 0, HEIGHT - 1 do
@@ -46,7 +52,6 @@ function Map:new(world, name)
 end
 
 function Map:draw()
-	self.batch:setTexture(res.tiles)
 	love.graphics.draw(self.batch)
 end
 
