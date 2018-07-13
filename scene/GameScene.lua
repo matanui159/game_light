@@ -23,4 +23,6 @@ function GameScene:draw()
 	self.bloom:postDraw()
 end
 
+-- this is a test change
+
 return GameScene
