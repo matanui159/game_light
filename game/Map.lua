@@ -1,0 +1,53 @@
+local Map = Object:extend()
+
+local WIDTH = 16
+local HEIGHT = 9
+
+function Map:getTile(x, y)
+	if x < 0 or x >= WIDTH or y < 0 or y >= HEIGHT then
+		return false
+	else
+		return self.data:getPixel(x, y) > 0.5
+	end
+end
+
+function Map:new(world, name)
+	self.data = love.image.newImageData("assets/maps/" .. name .. ".png")
+	self.body = love.physics.newBody(world)
+	self.batch = love.graphics.newSpriteBatch(res.tiles, WIDTH * HEIGHT, "static")
+
+	for x = 0, WIDTH - 1 do
+		for y = 0, HEIGHT - 1 do
+			if self:getTile(x, y) then
+				local shape = love.physics.newRectangleShape(x, y, 1, 1)
+				love.physics.newFixture(self.body, shape)
+
+				local qx = 0
+				if self:getTile(x - 1, y) then
+					qx = qx + 1
+				end
+				if self:getTile(x + 1, y) then
+					qx = qx + 2
+				end
+
+				local qy = 0
+				if self:getTile(x, y - 1) then
+					qy = qy + 1
+				end
+				if self:getTile(x, y + 1) then
+					qy = qy + 2
+				end
+
+				local quad = love.graphics.newQuad(qx, qy, 1, 1, 4, 4)
+				self.batch:add(quad, x, y)
+			end
+		end
+	end
+end
+
+function Map:draw()
+	self.batch:setTexture(res.tiles)
+	love.graphics.draw(self.batch)
+end
+
+return Map
