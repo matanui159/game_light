@@ -1,18 +1,19 @@
+enet = require("enet")
 Object = require("classic")
 Lerp = require("Lerp")
 
 local GameScene = require("scene.GameScene")
 local timer = 0
-local clock = 0.02
+local clock = 0.05
 
 function love.load()
-	scene = GameScene("test")
+	scene = GameScene()
 end
 
 function love.update(dt)
 	timer = timer + dt
 	if timer >= clock then
-		scene:update(dt)
+		scene:update(clock)
 		timer = timer % clock
 	end
 end

@@ -1,17 +1,21 @@
 local Lerp = Object:extend()
 
 function Lerp:new()
-	self.__values = {}
-	self:update()
+	rawset(self, "__values", {})
+	rawset(self, "__lerp", 1)
 end
 
 function Lerp:__index(key)
-	local value = self.__values[key]
-	if value then
-		local lerp = self.__lerp
-		return value.value * lerp + value.old * (1 - lerp)
-	else
+	if key == "new" then
 		return Lerp[key]
+	else
+		local value = self.__values[key]
+		if value then
+			local lerp = self.__lerp
+			return value.value * lerp + value.old * (1 - lerp)
+		else
+			return Lerp[key]
+		end
 	end
 end
 
