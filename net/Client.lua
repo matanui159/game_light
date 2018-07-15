@@ -33,6 +33,9 @@ function Client:connect(peer)
 	end
 end
 
+function Client:disconnect()
+end
+
 function Client:action(peer, index, action, data)
 	local player = self.players[index]
 
