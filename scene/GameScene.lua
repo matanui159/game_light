@@ -11,21 +11,24 @@ function GameScene:new()
 	self.super.new(self)
 	self.server = Server()
 	self.host:connect("127.0.0.1:" .. Server.PORT)
-	if love.system.getOS() == "Android" then
-		self.next_controller = TouchController
-	end
 
 	self.bloom = Bloom()
 end
 
-function GameScene:action(peer, index, action, data)
-	if action == "=" and not self.keyboard then
+function GameScene:receive(data, peer)
+	if data.a == "=" and not self.keyboard then
 		self.next_controller = KeyboardController()
-		local data = love.data.pack("string", ">Bc1", 1, "+")
-		peer:send(data)
+		if love.system.getOS() == "Android" then
+			self.next_controller = TouchController()
+		end
+
+		self:send({
+			p = 0,
+			a = "+"
+		})
 		self.keyboard = true
 	end
-	self.super.action(self, peer, index, action, data)
+	self.super.receive(self, data, peer)
 end
 
 function GameScene:update(dt)

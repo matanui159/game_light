@@ -1,3 +1,4 @@
+local binser = require("net.binser")
 local Map = require("game.Map")
 local Player = require("game.Player")
 local RemoteController = require("game.controller.RemoteController")
@@ -36,23 +37,35 @@ end
 function Client:disconnect()
 end
 
-function Client:action(peer, index, action, data)
-	local player = self.players[index]
-
-	if action == "m" then
-		local map = love.data.unpack(">s", data)
-		self.map:destroy()
-		self.map = Map(self.world, map)
+function Client:send(data, peer, fast)
+	local ser = binser.s(data)
+	local mode = "reliable"
+	if fast then
+		mode = "unreliable"
 	end
 
-	if action == "+" then
+	if peer then
+		peer:send(ser, 0, mode)
+	else
+		self.host:broadcast(ser, 0, mode)
+	end
+end
+
+function Client:receive(data, peer)
+	local player = self.players[data.p]
+
+	if data.a == "m" then
+		self.map:destroy()
+		self.map = Map(self.world, data.m)
+	end
+
+	if data.a == "+" then
 		player.peer = peer
 		player.controller = self.next_controller
 	end
 
-	if action == "p" or (action == "=" and self:isRemote(player)) then
-		local x, y, ax, ay, health, visible = love.data.unpack(">nnnnnB", data)
-		player.body:setPosition(x * 100, y * 100)
+	if data.a == "p" or (data.a == "=" and self:isRemote(player)) then
+		player.body:setPosition(data.x * 100, data.y * 100)
 	end
 end
 
@@ -66,8 +79,7 @@ function Client:update(dt)
 			self:disconnect(event.peer)
 			self.peers[event.peer] = nil
 		elseif event.type == "receive" then
-			local p, action, index = love.data.unpack(">Bc1", event.data)
-			self:action(event.peer, p, action, event.data:sub(index))
+			self:receive(binser.dn(event.data), event.peer)
 		end
 		event = self.host:service()
 	end
@@ -76,16 +88,12 @@ function Client:update(dt)
 	for index, player in ipairs(self.players) do
 		player:update(dt)
 		if self:isLocal(player) then
-			local data = love.data.pack("string", ">Bc1nnnnnB",
-				index, "=",
-				player.lerp.x,
-				player.lerp.y,
-				0,
-				0,
-				1,
-				1
-			)
-			self.host:broadcast(data)
+			self:send({
+				p = index,
+				a = "=",
+				x = player.lerp.x,
+				y = player.lerp.y
+			}, nil, true)
 		end
 	end
 

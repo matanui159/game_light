@@ -18,13 +18,18 @@ function Server:new()
 	self:newGame()
 end
 
-function Server:mapData()
-	return love.data.pack("string", ">Bc1s", 0, "m", self.map.name)
+function Server:sendMap(peer)
+	self:send({
+		p = 0,
+		a = "m",
+		m = self.map.name
+	}, peer)
 end
 
 function Server:newGame()
 	self.map = Map(self.world, "test")
-	self.host:broadcast(self:mapData())
+	self:sendMap()
+
 	for index, player in ipairs(self.players) do
 		local x = 1.5
 		if index % 2 == 0 then
@@ -37,15 +42,12 @@ function Server:newGame()
 		end
 
 		player.body:setPosition(x * 100, y * 100)
-		local data = love.data.pack("string", ">Bc1nnnnnB",
-			index, "p",
-			x,
-			y,
-			0,
-			0,
-			1,
-			1
-		)
+		self:send({
+			p = index,
+			a = "p",
+			x = x,
+			y = y
+		})
 	end
 end
 
@@ -58,24 +60,25 @@ function Server:isLocal()
 end
 
 function Server:connect(peer)
-	local data = love.data.pack("string", ">Bc1s", 0, "m", self.map.name)
-	peer:send(data)
+	self:sendMap(peer)
 end
 
-function Server:action(peer, index, action, data)
-	if action == "+" then
+function Server:receive(data, peer)
+	if data.a == "+" then
 		for i, player in ipairs(self.players) do
 			if player.controller:is(BotController) then
 				player.peer = peer
 				player.controller = RemoteController()
 
-				local data = love.data.pack("string", ">Bc1", i, "+")
-				peer:send(data)
+				self:send({
+					p = i,
+					a = "+"
+				}, peer)
 				break
 			end
 		end
 	else
-		self.super.action(self, peer, index, action, data)
+		self.super.receive(self, data, peer)
 	end
 end
 

@@ -45,7 +45,8 @@ function Player:draw(lerp)
 
 	love.graphics.setColor(unpack(COLORS[self.index]))
 	love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, RADIUS)
-	love.graphics.setColor(1, 1, 1)
+	
+		love.graphics.setColor(1, 1, 1)
 end
 
 return Player
