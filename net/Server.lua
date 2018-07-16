@@ -41,7 +41,7 @@ function Server:newGame()
 			y = 7.5
 		end
 
-		player.body:setPosition(x * 100, y * 100)
+		player.body:setPosition(x, y)
 		self:send({
 			p = index,
 			a = "p",

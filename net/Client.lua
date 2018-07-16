@@ -65,7 +65,7 @@ function Client:receive(data, peer)
 	end
 
 	if data.a == "p" or (data.a == "=" and self:isRemote(player)) then
-		player.body:setPosition(data.x * 100, data.y * 100)
+		player.body:setPosition(data.x, data.y)
 	end
 end
 

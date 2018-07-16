@@ -29,7 +29,7 @@ function Map:new(world, name)
 		for x = 0, WIDTH - 1 do
 			for y = 0, HEIGHT - 1 do
 				if self:getTile(x, y) then
-					local shape = love.physics.newRectangleShape(x * 100 + 50, y * 100 + 50, 100, 100)
+					local shape = love.physics.newRectangleShape(x + 0.5, y + 0.5, 1, 1)
 					love.physics.newFixture(self.body, shape)
 
 					local qx = 0

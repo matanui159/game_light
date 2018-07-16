@@ -7,6 +7,7 @@ local timer = 0
 local clock = 0.05
 
 function love.load()
+	love.physics.setMeter(1)
 	scene = GameScene()
 end
 

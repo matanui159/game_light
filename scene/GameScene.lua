@@ -27,6 +27,9 @@ function GameScene:receive(data, peer)
 end
 
 function GameScene:update(dt)
+	if self.map.name then
+		self.ready = true
+	end
 	self.server:update(dt)
 	self.super.update(self, dt)
 end
@@ -36,9 +39,11 @@ function GameScene:draw(lerp)
 	love.graphics.push()
 	love.graphics.scale(love.graphics.getWidth() / 16, love.graphics.getHeight() / 9)
 
-	self.map:draw()
-	for _, player in ipairs(self.players) do
-		player:draw(lerp)
+	if self.ready then
+		self.map:draw()
+		for _, player in ipairs(self.players) do
+			player:draw(lerp)
+		end
 	end
 
 	love.graphics.pop()
