@@ -17,7 +17,11 @@ function Bloom:new()
 		Bloom.blur.c1 = love.graphics.newCanvas()
 		Bloom.blur.c2 = love.graphics.newCanvas()
 
-		Bloom.main = love.graphics.newCanvas()
+		Bloom.main = love.graphics.newCanvas(
+			love.graphics.getWidth(),
+			love.graphics.getHeight(),
+			{msaa = 4}
+		)
 		Bloom.load = true
 	end
 end
