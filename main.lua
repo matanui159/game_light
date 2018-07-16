@@ -1,5 +1,3 @@
-require("debug")
-
 enet = require("enet")
 Object = require("classic")
 Lerp = require("Lerp")

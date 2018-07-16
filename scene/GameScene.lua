@@ -2,7 +2,6 @@ local Client = require("net.Client")
 local Server = require("net.Server")
 
 local KeyboardController = require("game.controller.KeyboardController")
-local TouchController = require("game.controller.TouchController")
 local Bloom = require("fx.Bloom")
 
 local GameScene = Client:extend()
@@ -18,10 +17,6 @@ end
 function GameScene:receive(data, peer)
 	if data.a == "=" and not self.keyboard then
 		self.next_controller = KeyboardController()
-		if love.system.getOS() == "Android" then
-			self.next_controller = TouchController()
-		end
-
 		self:send({
 			p = 0,
 			a = "+"

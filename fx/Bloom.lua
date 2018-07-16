@@ -2,14 +2,6 @@ local Bloom = Object:extend()
 
 function Bloom:new()
 	if not Bloom.load then
-		Bloom.mul = 1
-		if love.system.getOS() == "Android" then
-			Bloom.mul = 0.1
-		end
-		local width  = love.graphics.getWidth()  * Bloom.mul
-		local height = love.graphics.getHeight() * Bloom.mul
-		Bloom.main = love.graphics.newCanvas()
-
 		Bloom.blur = {}
 		Bloom.blur.shader = love.graphics.newShader([[
 			extern vec2 offset;
@@ -22,9 +14,10 @@ function Bloom:new()
 				return result / 4.0;
 			}
 		]])
-		Bloom.blur.c1 = love.graphics.newCanvas(width, height)
-		Bloom.blur.c2 = love.graphics.newCanvas(width, height)
+		Bloom.blur.c1 = love.graphics.newCanvas()
+		Bloom.blur.c2 = love.graphics.newCanvas()
 
+		Bloom.main = love.graphics.newCanvas()
 		Bloom.load = true
 	end
 end
@@ -44,11 +37,8 @@ end
 function Bloom:postDraw()
 	love.graphics.setShader(Bloom.blur.shader)
 	love.graphics.setBlendMode("alpha", "premultiplied")
-	love.graphics.push()
-	love.graphics.scale(Bloom.mul)
-	self:pass(Bloom.main, Bloom.blur.c1, 0.5)
-	love.graphics.pop()
 
+	self:pass(Bloom.main,    Bloom.blur.c1, 0.5)
 	self:pass(Bloom.blur.c1, Bloom.blur.c2, 1.5)
 	self:pass(Bloom.blur.c2, Bloom.blur.c1, 2.5)
 	self:pass(Bloom.blur.c1, Bloom.blur.c2, 2.5)
@@ -58,7 +48,7 @@ function Bloom:postDraw()
 	love.graphics.setShader()
 	love.graphics.setBlendMode("add", "premultiplied")
 	love.graphics.draw(Bloom.main)
-	love.graphics.draw(Bloom.blur.c1, 0, 0, 0, 1 / Bloom.mul)
+	love.graphics.draw(Bloom.blur.c1)
 	love.graphics.setBlendMode("alpha", "alphamultiply")
 end
 
