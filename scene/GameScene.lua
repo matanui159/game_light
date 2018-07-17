@@ -1,11 +1,13 @@
 local Client = require("net.Client")
 local Server = require("net.Server")
 
+local Bloom = require("fx.Bloom")
+local Map = require("game.Map")
+
 local KeyboardController = require("game.controller.KeyboardController")
 local GamepadController  = require("game.controller.GamepadController")
 
-local Bloom = require("fx.Bloom")
-local Map = require("game.Map")
+local Font = require("ui.Font")
 
 local GameScene = Client:extend()
 
@@ -26,6 +28,26 @@ function GameScene:new()
 	self.next_controllers = {}
 
 	self.bloom = Bloom()
+	self.font = Font(self)
+end
+
+function GameScene:resize()
+	self.bloom:resize()
+	self.font:resize()
+end
+
+function GameScene:calcTransform()
+	local width  = love.graphics.getWidth()
+	local height = love.graphics.getHeight()
+	if width / height < Map.WIDTH / Map.HEIGHT then
+		local scale = width / Map.WIDTH
+		local trans = (height - Map.HEIGHT * scale) / 2
+		return scale, 0, trans
+	else
+		local scale = height / Map.HEIGHT
+		local trans = (width - Map.WIDTH * scale) / 2
+		return scale, trans, 0
+	end
 end
 
 function GameScene:update(dt)
@@ -52,24 +74,17 @@ end
 function GameScene:draw(lerp)
 	if self.ready then
 		self.bloom:preDraw()
-		love.graphics.push()
 
-		local width  = love.graphics.getWidth()
-		local height = love.graphics.getHeight()
-		if width / height < Map.WIDTH / Map.HEIGHT then
-			local scale = width / Map.WIDTH
-			love.graphics.translate(0, (height - Map.HEIGHT * scale) / 2)
-			love.graphics.scale(scale)
-		else
-			local scale = height / Map.HEIGHT
-			love.graphics.translate((width - Map.WIDTH * scale) / 2, 0)
-			love.graphics.scale(scale)
-		end
+		local scale, tx, ty = self:calcTransform()
+		love.graphics.push()
+		love.graphics.translate(tx, ty)
+		love.graphics.scale(scale)
 
 		self.map:draw()
 		for _, player in ipairs(self.players) do
 			player:draw(lerp)
 		end
+		self.font:print("Hello, World!", 4, 8, 8)
 
 		love.graphics.pop()
 		self.bloom:postDraw()
