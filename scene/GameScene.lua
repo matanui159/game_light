@@ -2,6 +2,7 @@ local Client = require("net.Client")
 local Server = require("net.Server")
 
 local KeyboardController = require("game.controller.KeyboardController")
+local GamepadController  = require("game.controller.GamepadController")
 
 local Bloom = require("fx.Bloom")
 local Map = require("game.Map")
@@ -16,6 +17,12 @@ function GameScene:new()
 	self.controllers = {
 		KeyboardController()
 	}
+	for _, gamepad in ipairs(love.joystick.getJoysticks()) do
+		if gamepad:isGamepad() then
+			table.insert(self.controllers, GamepadController(gamepad))
+		end
+	end
+
 	self.next_controllers = {}
 
 	self.bloom = Bloom()

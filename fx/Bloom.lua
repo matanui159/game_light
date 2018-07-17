@@ -1,6 +1,7 @@
-local Bloom = Object:extend()
+local Bloom = Resizable:extend()
 
 function Bloom:new()
+	self.super.new(self)
 	if not Bloom.load then
 		Bloom.blur = {}
 		Bloom.blur.shader = love.graphics.newShader([[
@@ -14,16 +15,20 @@ function Bloom:new()
 				return result / 4.0;
 			}
 		]])
-		Bloom.blur.c1 = love.graphics.newCanvas()
-		Bloom.blur.c2 = love.graphics.newCanvas()
-
-		Bloom.main = love.graphics.newCanvas(
-			love.graphics.getWidth(),
-			love.graphics.getHeight(),
-			{msaa = 4}
-		)
+		self:resize()
 		Bloom.load = true
 	end
+end
+
+function Bloom:resize()
+	Bloom.blur.c1 = love.graphics.newCanvas()
+	Bloom.blur.c2 = love.graphics.newCanvas()
+
+	Bloom.main = love.graphics.newCanvas(
+		love.graphics.getWidth(),
+		love.graphics.getHeight(),
+		{msaa = 4}
+	)
 end
 
 function Bloom:pass(from, to, offset)

@@ -1,5 +1,6 @@
 enet = require("enet")
 Object = require("classic")
+Resizable = require("Resizable")
 Lerp = require("Lerp")
 
 local GameScene = require("scene.GameScene")
@@ -9,6 +10,10 @@ local clock = 0.05
 function love.load()
 	love.physics.setMeter(1)
 	scene = GameScene()
+end
+
+function love.resize()
+	Resizable.resizeAll()
 end
 
 function love.update(dt)

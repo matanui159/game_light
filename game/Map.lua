@@ -16,7 +16,7 @@ end
 function Map:new(world, name)
 	if not Map.load then
 		Map.tiles = love.graphics.newImage("assets/tiles.png")
-		Map.tiles:setFilter("nearest")
+		Map.tiles:setFilter("linear", "nearest")
 		Map.load = true
 	end
 
@@ -48,8 +48,8 @@ function Map:new(world, name)
 						qy = qy + 2
 					end
 
-					local quad = love.graphics.newQuad(qx, qy, 1, 1, 4, 4)
-					self.batch:add(quad, x, y)
+					local quad = love.graphics.newQuad(qx * 10 + 1, qy * 10 + 1, 8, 8, 40, 40)
+					self.batch:add(quad, x, y, 0, 1 / 8)
 				end
 			end
 		end
