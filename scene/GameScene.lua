@@ -2,7 +2,9 @@ local Client = require("net.Client")
 local Server = require("net.Server")
 
 local KeyboardController = require("game.controller.KeyboardController")
+
 local Bloom = require("fx.Bloom")
+local Map = require("game.Map")
 
 local GameScene = Client:extend()
 
@@ -43,7 +45,18 @@ function GameScene:draw(lerp)
 	if self.ready then
 		self.bloom:preDraw()
 		love.graphics.push()
-		love.graphics.scale(love.graphics.getWidth() / 16, love.graphics.getHeight() / 9)
+
+		local width  = love.graphics.getWidth()
+		local height = love.graphics.getHeight()
+		if width / height < Map.WIDTH / Map.HEIGHT then
+			local scale = width / Map.WIDTH
+			love.graphics.translate(0, (height - Map.HEIGHT * scale) / 2)
+			love.graphics.scale(scale)
+		else
+			local scale = height / Map.HEIGHT
+			love.graphics.translate((width - Map.WIDTH * scale) / 2, 0)
+			love.graphics.scale(scale)
+		end
 
 		self.map:draw()
 		for _, player in ipairs(self.players) do

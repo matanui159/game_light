@@ -1,11 +1,11 @@
 local Map = Object:extend()
 
-local WIDTH = 16
-local HEIGHT = 9
+Map.WIDTH  = 16
+Map.HEIGHT =  9
 
 function Map:getTile(x, y)
 	if self.data then
-		if x < 0 or x >= WIDTH or y < 0 or y >= HEIGHT then
+		if x < 0 or x >= Map.WIDTH or y < 0 or y >= Map.HEIGHT then
 			return false
 		else
 			return self.data:getPixel(x, y) > 0.5
@@ -24,10 +24,10 @@ function Map:new(world, name)
 		self.name = name
 		self.data = love.image.newImageData("assets/maps/" .. name .. ".png")
 		self.body = love.physics.newBody(world)
-		self.batch = love.graphics.newSpriteBatch(Map.tiles, WIDTH * HEIGHT, "static")
+		self.batch = love.graphics.newSpriteBatch(Map.tiles, Map.WIDTH * Map.HEIGHT, "static")
 
-		for x = 0, WIDTH - 1 do
-			for y = 0, HEIGHT - 1 do
+		for x = 0, Map.WIDTH - 1 do
+			for y = 0, Map.HEIGHT - 1 do
 				if self:getTile(x, y) then
 					local shape = love.physics.newRectangleShape(x + 0.5, y + 0.5, 1, 1)
 					love.physics.newFixture(self.body, shape)
