@@ -51,10 +51,6 @@ function Server:newGame()
 	end
 end
 
-function Server:isRemote()
-	return true
-end
-
 function Server:isLocal()
 	return true
 end

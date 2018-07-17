@@ -61,7 +61,7 @@ function Client:receive(data, peer)
 
 	if data.a == "+" then
 		player.peer = peer
-		player.controller = self.next_controller
+		player.controller = table.remove(self.next_controllers)
 	end
 
 	if data.a == "p" or (data.a == "=" and self:isRemote(player)) then

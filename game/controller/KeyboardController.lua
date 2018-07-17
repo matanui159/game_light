@@ -2,6 +2,10 @@ local Controller = require("game.controller.Controller")
 
 local KeyboardController = Controller:extend()
 
+function KeyboardController:join()
+	return love.keyboard.isDown("space")
+end
+
 function KeyboardController:update()
 	self.move.x = 0
 	if love.keyboard.isDown("a") then
