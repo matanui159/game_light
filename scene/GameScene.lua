@@ -38,11 +38,12 @@ function GameScene:update(dt)
 	if self.ready then
 		for i, controller in ipairs(self.controllers) do
 			if controller:join() then
-				table.insert(self.next_controllers, table.remove(self.controllers, index))
+				table.insert(self.next_controllers, table.remove(self.controllers, i))
 				self:send({
 					p = 0,
 					a = "+"
 				})
+				break
 			end
 		end
 	end
