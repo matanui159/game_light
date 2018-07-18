@@ -1,4 +1,5 @@
 local Button = require("ui.Button")
+
 local CloseButton = Button:extend()
 
 CloseButton.X = 15

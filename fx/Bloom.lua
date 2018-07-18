@@ -1,7 +1,6 @@
 local Bloom = Object:extend()
 
 function Bloom:new()
-	self.super.new(self)
 	if not Bloom.load then
 		Bloom.shader = love.graphics.newShader([[
 			extern vec2 offset;

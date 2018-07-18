@@ -9,6 +9,7 @@ local GamepadController  = require("game.controller.GamepadController")
 
 local Font = require("ui.Font")
 local CloseButton = require("ui.CloseButton")
+local FullscreenButton = require("ui.FullscreenButton")
 
 local GameScene = Client:extend()
 
@@ -32,6 +33,7 @@ function GameScene:new()
 	self.ui = {}
 	self.ui.font = Font(self)
 	self.ui.close = CloseButton()
+	self.ui.fullscreen = FullscreenButton()
 end
 
 function GameScene:calcTransform()
@@ -74,6 +76,7 @@ function GameScene:update(dt)
 		end
 
 		self.ui.close:update()
+		self.ui.fullscreen:update()
 	end
 end
 
@@ -92,6 +95,7 @@ function GameScene:draw(lerp)
 		end
 
 		self.ui.close:draw()
+		self.ui.fullscreen:draw()
 
 		love.graphics.pop()
 		self.bloom:postDraw()
