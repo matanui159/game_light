@@ -2,18 +2,15 @@ local Button = Object:extend()
 
 function Button:new(x, y, width)
 	if not Button.load then
-		Button.up = love.graphics.newImage("assets/ui/button/up.png")
-		Button.up:setFilter("linear", "nearest")
-
-		Button.down = love.graphics.newImage("assets/ui/button/down.png")
-		Button.down:setFilter("linear", "nearest")
+		Button.tiles = love.graphics.newImage("assets/tiles.png")
+		Button.tiles:setFilter("linear", "nearest")
 		Button.load = true
 	end
 
 	self.x = x
 	self.y = y
 	self.width = width
-	self.batch = love.graphics.newSpriteBatch(Button.up, width, "static")
+	self.batch = love.graphics.newSpriteBatch(Button.tiles, width, "static")
 	for i = 0, width - 1 do
 		local qx = 0
 		if i > 0 then
@@ -23,8 +20,8 @@ function Button:new(x, y, width)
 			qx = qx + 2
 		end
 
-		local quad = love.graphics.newQuad(qx * 18 + 1, 1, 16, 16, 72, 18)
-		self.batch:add(quad, i, 0, 0, 1 / 16)
+		local quad = love.graphics.newQuad(qx * 10 + 1, 1, 8, 8, 40, 40)
+		self.batch:add(quad, i, 0, 0, 1 / 8)
 	end
 	self.state = "default"
 end
@@ -57,11 +54,11 @@ end
 
 function Button:draw(scene)
 	if self.state == "pressed" then
-		self.batch:setTexture(Button.down)
+		love.graphics.rectangle("fill", self.x, self.y, self.width, 1)
+		love.graphics.setColor(0, 0, 0)
 	else
-		self.batch:setTexture(Button.up)
+		love.graphics.draw(self.batch, self.x, self.y)
 	end
-	love.graphics.draw(self.batch, self.x, self.y)
 end
 
 return Button

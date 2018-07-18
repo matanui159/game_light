@@ -8,12 +8,12 @@ local KeyboardController = require("game.controller.KeyboardController")
 local GamepadController  = require("game.controller.GamepadController")
 
 local Font = require("ui.Font")
-local CloseButton = require("ui.CloseButton")
-local FullscreenButton = require("ui.FullscreenButton")
+local MenuButton = require("ui.MenuButton")
 
 local GameScene = Client:extend()
 
 function GameScene:new()
+	scene = self
 	self.super.new(self)
 	self.server = Server()
 	self.host:connect("127.0.0.1:" .. Server.PORT)
@@ -31,9 +31,8 @@ function GameScene:new()
 	self.bloom = Bloom()
 
 	self.ui = {}
-	self.ui.font = Font(self)
-	self.ui.close = CloseButton()
-	self.ui.fullscreen = FullscreenButton()
+	self.ui.font = Font()
+	self.ui.menu = MenuButton()
 end
 
 function GameScene:calcTransform()
@@ -53,7 +52,7 @@ end
 function GameScene:resize(tx, ty, scale)
 	self.bloom:resize()
 
-	self.ui.font:resize(self)
+	self.ui.font:resize()
 end
 
 function GameScene:update(dt)
@@ -75,8 +74,7 @@ function GameScene:update(dt)
 			end
 		end
 
-		self.ui.close:update()
-		self.ui.fullscreen:update()
+		self.ui.menu:update()
 	end
 end
 
@@ -94,8 +92,7 @@ function GameScene:draw(lerp)
 			player:draw(lerp)
 		end
 
-		self.ui.close:draw()
-		self.ui.fullscreen:draw()
+		self.ui.menu:draw()
 
 		love.graphics.pop()
 		self.bloom:postDraw()
