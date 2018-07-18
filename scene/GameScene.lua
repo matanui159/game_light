@@ -8,6 +8,7 @@ local KeyboardController = require("game.controller.KeyboardController")
 local GamepadController  = require("game.controller.GamepadController")
 
 local Font = require("ui.Font")
+local CloseButton = require("ui.CloseButton")
 
 local GameScene = Client:extend()
 
@@ -30,6 +31,7 @@ function GameScene:new()
 
 	self.ui = {}
 	self.ui.font = Font(self)
+	self.ui.close = CloseButton()
 end
 
 function GameScene:calcTransform()
@@ -48,7 +50,8 @@ end
 
 function GameScene:resize(tx, ty, scale)
 	self.bloom:resize()
-	self.ui.font:resize()
+
+	self.ui.font:resize(self)
 end
 
 function GameScene:update(dt)
@@ -69,6 +72,8 @@ function GameScene:update(dt)
 				break
 			end
 		end
+
+		self.ui.close:update()
 	end
 end
 
@@ -85,7 +90,8 @@ function GameScene:draw(lerp)
 		for _, player in ipairs(self.players) do
 			player:draw(lerp)
 		end
-		self.ui.font:print("Hello, World!", 4, 8, 8)
+
+		self.ui.close:draw()
 
 		love.graphics.pop()
 		self.bloom:postDraw()
