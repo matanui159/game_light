@@ -6,8 +6,9 @@ function Font:new(scene)
 end
 
 function Font:resize()
-	self.scale = self.scene:calcTransform()
-	self.font = love.graphics.newFont("assets/font/regular.ttf", self.scale / 2)
+	local tx, ty, scale = self.scene:calcTransform()
+	self.scale = scale
+	self.font = love.graphics.newFont("assets/font/regular.ttf", scale / 2)
 end
 
 function Font:print(text, x, y, width)

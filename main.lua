@@ -4,7 +4,7 @@ Lerp = require("Lerp")
 
 local GameScene = require("scene.GameScene")
 local timer = 0
-local clock = 0.05
+local CLOCK = 0.05
 
 function love.load()
 	love.physics.setMeter(1)
@@ -17,12 +17,12 @@ end
 
 function love.update(dt)
 	timer = timer + dt
-	if timer >= clock then
-		scene:update(clock)
-		timer = timer % clock
+	if timer >= CLOCK then
+		scene:update(CLOCK)
+		timer = timer % CLOCK
 	end
 end
 
 function love.draw()
-	scene:draw(timer / clock)
+	scene:draw(timer / CLOCK)
 end

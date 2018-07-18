@@ -24,16 +24,12 @@ function GameScene:new()
 			table.insert(self.controllers, GamepadController(gamepad))
 		end
 	end
-
 	self.next_controllers = {}
 
 	self.bloom = Bloom()
-	self.font = Font(self)
-end
 
-function GameScene:resize()
-	self.bloom:resize()
-	self.font:resize()
+	self.ui = {}
+	self.ui.font = Font(self)
 end
 
 function GameScene:calcTransform()
@@ -42,12 +38,17 @@ function GameScene:calcTransform()
 	if width / height < Map.WIDTH / Map.HEIGHT then
 		local scale = width / Map.WIDTH
 		local trans = (height - Map.HEIGHT * scale) / 2
-		return scale, 0, trans
+		return 0, trans, scale
 	else
 		local scale = height / Map.HEIGHT
 		local trans = (width - Map.WIDTH * scale) / 2
-		return scale, trans, 0
+		return trans, 0, scale
 	end
+end
+
+function GameScene:resize(tx, ty, scale)
+	self.bloom:resize()
+	self.ui.font:resize()
 end
 
 function GameScene:update(dt)
@@ -75,7 +76,7 @@ function GameScene:draw(lerp)
 	if self.ready then
 		self.bloom:preDraw()
 
-		local scale, tx, ty = self:calcTransform()
+		local tx, ty, scale = self:calcTransform()
 		love.graphics.push()
 		love.graphics.translate(tx, ty)
 		love.graphics.scale(scale)
@@ -84,7 +85,7 @@ function GameScene:draw(lerp)
 		for _, player in ipairs(self.players) do
 			player:draw(lerp)
 		end
-		self.font:print("Hello, World!", 4, 8, 8)
+		self.ui.font:print("Hello, World!", 4, 8, 8)
 
 		love.graphics.pop()
 		self.bloom:postDraw()
