@@ -28,7 +28,6 @@ function love.update(dt)
 		scene:update(CLOCK)
 		timer = timer % CLOCK
 	end
-	print(love.timer.getFPS())
 end
 
 function love.draw()

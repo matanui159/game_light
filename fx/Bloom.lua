@@ -20,9 +20,12 @@ function Bloom:new()
 end
 
 function Bloom:resize()
-	self.mul = 1
-	if config.bloom <= 2 then
-		self.mul = 0.1
+	self.mul = 1 / 8
+	if config.bloom >= 3 then
+		self.mul = 1 / 4
+		if config.bloom >= 4 then
+			self.mul = 1 / 2
+		end
 	end
 	local width  = love.graphics.getWidth()  * self.mul
 	local height = love.graphics.getHeight() * self.mul
@@ -63,8 +66,11 @@ function Bloom:postDraw()
 
 		self:pass(self.blur.c1, self.blur.c2, 1.5)
 		self:pass(self.blur.c2, self.blur.c1, 2.5)
-		self:pass(self.blur.c1, self.blur.c2, 2.5)
-		self:pass(self.blur.c2, self.blur.c1, 3.5)
+
+		if config.bloom >= 3 then
+			self:pass(self.blur.c1, self.blur.c2, 2.5)
+			self:pass(self.blur.c2, self.blur.c1, 3.5)
+		end
 
 		if config.bloom >= 4 then
 			self:pass(self.blur.c1, self.blur.c2, 1.5)
