@@ -7,7 +7,7 @@ local MenuScene = Object:extend()
 function MenuScene:new(font)
 	self.font = font
 
-	self.fullscreen = SelectButton(font, 3, 2, 4, {
+	self.fullscreen = SelectButton(font, 3, 3, 4, {
 		"FLLSCRN: OFF",
 		"FLLSCRN: ON"
 	}, config.fullscreen)
@@ -20,7 +20,7 @@ function MenuScene:new(font)
 		end
 	end
 
-	self.msaa = SelectButton(font, 3, 4, 4, {
+	self.msaa = SelectButton(font, 3, 5, 4, {
 		"MSAA: OFF",
 		"MSAA: LOW",
 		"MSAA: MED",
@@ -32,7 +32,7 @@ function MenuScene:new(font)
 		scene.bloom:resize()
 	end
 
-	self.bloom = SelectButton(font, 9, 2, 4, {
+	self.bloom = SelectButton(font, 9, 3, 4, {
 		"BLOOM: OFF",
 		"BLOOM: LOW",
 		"BLOOM: MED",
@@ -44,7 +44,7 @@ function MenuScene:new(font)
 		scene.bloom:resize()
 	end
 
-	self.quit = TextButton(font, "QUIT", 9, 4, 4)
+	self.quit = TextButton(font, "QUIT", 6, 7, 4)
 	self.quit.action = function()
 		love.event.quit()
 	end
@@ -58,7 +58,7 @@ function MenuScene:update()
 end
 
 function MenuScene:draw()
-	love.graphics.setColor(0, 0, 0, 0.7)
+	love.graphics.setColor(0, 0, 0, 0.8)
 	love.graphics.rectangle("fill", 0, 0, Map.WIDTH, Map.HEIGHT)
 	love.graphics.setColor(1, 1, 1)
 
