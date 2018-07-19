@@ -22,10 +22,10 @@ function MenuScene:new(font)
 
 	self.msaa = SelectButton(font, 3, 4, 4, {
 		"MSAA: OFF",
-		"MSAA: 2x",
-		"MSAA: 4x",
-		"MSAA: 8x",
-		"MSAA: 16x"
+		"MSAA: LOW",
+		"MSAA: MED",
+		"MSAA: HIGH",
+		"MSAA: ULTRA"
 	}, config.msaa)
 	self.msaa.change = function(index)
 		config.msaa = index
