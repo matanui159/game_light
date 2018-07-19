@@ -57,6 +57,9 @@ function Button:draw(scene)
 		love.graphics.rectangle("fill", self.x, self.y, self.width, 1)
 		love.graphics.setColor(0, 0, 0)
 	else
+		love.graphics.setColor(0, 0, 0)
+		love.graphics.rectangle("fill", self.x, self.y, self.width, 1)
+		love.graphics.setColor(1, 1, 1)
 		love.graphics.draw(self.batch, self.x, self.y)
 	end
 end

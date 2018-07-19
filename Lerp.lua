@@ -10,7 +10,7 @@ function Lerp:__index(key)
 		return Lerp[key]
 	else
 		local value = self.__values[key]
-		if value then
+		if value ~= nil then
 			local lerp = self.__lerp
 			return value.value * lerp + value.old * (1 - lerp)
 		else
@@ -21,7 +21,7 @@ end
 
 function Lerp:__newindex(key, value)
 	local values = self.__values
-	if values[key] then
+	if values[key] ~= nil then
 		values[key].value = value
 	else
 		values[key] = {

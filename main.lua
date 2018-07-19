@@ -2,12 +2,19 @@ enet = require("enet")
 Object = require("classic")
 Lerp = require("Lerp")
 
+local Config = require("Config")
 local GameScene = require("scene.GameScene")
 local timer = 0
 local CLOCK = 0.05
 
 function love.load()
 	love.physics.setMeter(1)
+
+	config = Config()
+	if config.fullscreen == 2 then
+		love.window.setFullscreen(true)
+	end
+
 	scene = GameScene()
 end
 
@@ -21,6 +28,7 @@ function love.update(dt)
 		scene:update(CLOCK)
 		timer = timer % CLOCK
 	end
+	print(love.timer.getFPS())
 end
 
 function love.draw()

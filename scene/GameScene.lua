@@ -14,7 +14,7 @@ local GameScene = Client:extend()
 
 function GameScene:new()
 	scene = self
-	self.super.new(self)
+	GameScene.super.new(self)
 	self.server = Server()
 	self.host:connect("127.0.0.1:" .. Server.PORT)
 
@@ -32,7 +32,7 @@ function GameScene:new()
 
 	self.ui = {}
 	self.ui.font = Font()
-	self.ui.menu = MenuButton()
+	self.ui.menu = MenuButton(self.ui.font)
 end
 
 function GameScene:calcTransform()
@@ -60,17 +60,21 @@ function GameScene:update(dt)
 		self.ready = true
 	end
 	self.server:update(dt)
-	self.super.update(self, dt)
+	GameScene.super.update(self, dt)
 
 	if self.ready then
-		for i, controller in ipairs(self.controllers) do
-			if controller:join() then
-				table.insert(self.next_controllers, table.remove(self.controllers, i))
-				self:send({
-					p = 0,
-					a = "+"
-				})
-				break
+		if self.menu then
+			self.menu:update()
+		else
+			for i, controller in ipairs(self.controllers) do
+				if controller:join() then
+					table.insert(self.next_controllers, table.remove(self.controllers, i))
+					self:send({
+						p = 0,
+						a = "+"
+					})
+					break
+				end
 			end
 		end
 
@@ -90,6 +94,10 @@ function GameScene:draw(lerp)
 		self.map:draw()
 		for _, player in ipairs(self.players) do
 			player:draw(lerp)
+		end
+
+		if self.menu then
+			self.menu:draw()
 		end
 
 		self.ui.menu:draw()

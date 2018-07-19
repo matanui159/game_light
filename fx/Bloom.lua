@@ -20,12 +20,21 @@ function Bloom:new()
 end
 
 function Bloom:resize()
-	self.blur.c1 = love.graphics.newCanvas()
-	self.blur.c2 = love.graphics.newCanvas()
+	self.mul = 1
+	if config.bloom <= 2 then
+		self.mul = 0.1
+	end
+	local width  = love.graphics.getWidth()  * self.mul
+	local height = love.graphics.getHeight() * self.mul
+
+	self.blur.c1 = love.graphics.newCanvas(width, height)
+	self.blur.c2 = love.graphics.newCanvas(width, height)
+
+	local msaa = {0, 2, 4, 8}
 	self.main = love.graphics.newCanvas(
 		love.graphics.getWidth(),
 		love.graphics.getHeight(),
-		{msaa = 4}
+		{msaa = msaa[config.msaa]}
 	)
 end
 
@@ -42,20 +51,40 @@ function Bloom:preDraw()
 end
 
 function Bloom:postDraw()
-	love.graphics.setShader(Bloom.shader)
 	love.graphics.setBlendMode("alpha", "premultiplied")
 
-	self:pass(self.main,    self.blur.c1, 0.5)
-	self:pass(self.blur.c1, self.blur.c2, 1.5)
-	self:pass(self.blur.c2, self.blur.c1, 2.5)
-	self:pass(self.blur.c1, self.blur.c2, 2.5)
-	self:pass(self.blur.c2, self.blur.c1, 3.5)
+	if config.bloom > 1 then
+		love.graphics.setShader(Bloom.shader)
+
+		love.graphics.push()
+		love.graphics.scale(self.mul)
+		self:pass(self.main, self.blur.c1, 0.5)
+		love.graphics.pop()
+
+		self:pass(self.blur.c1, self.blur.c2, 1.5)
+		self:pass(self.blur.c2, self.blur.c1, 2.5)
+		self:pass(self.blur.c1, self.blur.c2, 2.5)
+		self:pass(self.blur.c2, self.blur.c1, 3.5)
+
+		if config.bloom >= 4 then
+			self:pass(self.blur.c1, self.blur.c2, 1.5)
+			self:pass(self.blur.c2, self.blur.c1, 2.5)
+			self:pass(self.blur.c1, self.blur.c2, 2.5)
+			self:pass(self.blur.c2, self.blur.c1, 3.5)
+		end
+
+		love.graphics.setShader()
+		love.graphics.setCanvas()
+		love.graphics.setBlendMode("add", "premultiplied")
+
+		love.graphics.push()
+		love.graphics.scale(1 / self.mul)
+		love.graphics.draw(self.blur.c1)
+		love.graphics.pop()
+	end
 	
 	love.graphics.setCanvas()
-	love.graphics.setShader()
-	love.graphics.setBlendMode("add", "premultiplied")
 	love.graphics.draw(self.main)
-	love.graphics.draw(self.blur.c1)
 	love.graphics.setBlendMode("alpha", "alphamultiply")
 end
 

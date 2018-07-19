@@ -25,19 +25,21 @@ function Player:new(world, x, y, index)
 	self.index = index
 end
 
-function Player:update(dt, scene)
+function Player:update(dt)
 	self.lerp:update()
 	self.controller:update()
 	self.lerp.x = self.body:getX()
 	self.lerp.y = self.body:getY()
 
-	local move = self.controller.move
-	local len = math.sqrt(move.x * move.x + move.y * move.y)
-	if len > 1 then
-		move.x = move.x / len
-		move.y = move.y / len
+	if not scene.menu then
+		local move = self.controller.move
+		local len = math.sqrt(move.x * move.x + move.y * move.y)
+		if len > 1 then
+			move.x = move.x / len
+			move.y = move.y / len
+		end
+		self.body:applyForce(move.x * 100, move.y * 100)
 	end
-	self.body:applyForce(move.x * 100, move.y * 100)
 end
 
 function Player:draw(lerp)

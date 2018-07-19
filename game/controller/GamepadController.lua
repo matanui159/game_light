@@ -3,7 +3,7 @@ local Controller = require("game.controller.Controller")
 local GamepadController = Controller:extend()
 
 function GamepadController:new(gamepad)
-	self.super.new(self)
+	GamepadController.super.new(self)
 	self.gamepad = gamepad
 end
 
