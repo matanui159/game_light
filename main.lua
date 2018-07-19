@@ -8,6 +8,7 @@ local timer = 0
 local CLOCK = 0.05
 
 function love.load()
+	love.keyboard.setKeyRepeat(true)
 	love.physics.setMeter(1)
 
 	config = Config()
@@ -32,4 +33,14 @@ end
 
 function love.draw()
 	scene:draw(timer / CLOCK)
+end
+
+function love.textinput(text)
+	scene:textinput(text)
+end
+
+function love.keypressed(key, _, rep)
+	if key == "backspace" then
+		love.textinput("\b")
+	end
 end

@@ -107,4 +107,10 @@ function GameScene:draw(lerp)
 	end
 end
 
+function GameScene:textinput(text)
+	if self.menu then
+		self.menu:textinput(text)
+	end
+end
+
 return GameScene

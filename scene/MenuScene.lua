@@ -1,11 +1,15 @@
 local Map = require("game.Map")
 local TextButton = require("ui.TextButton")
 local SelectButton = require("ui.SelectButton")
+local TextBox = require("ui.TextBox")
 
 local MenuScene = Object:extend()
 
 function MenuScene:new(font)
 	self.font = font
+
+	self.ip = TextBox(font, "ENTER IP...", 4, 1, 6)
+	self.join = TextButton(font, "JOIN", 10, 1, 2)
 
 	self.fullscreen = SelectButton(font, 3, 3, 4, {
 		"FLLSCRN: OFF",
@@ -51,6 +55,8 @@ function MenuScene:new(font)
 end
 
 function MenuScene:update()
+	self.ip:update()
+	self.join:update()
 	self.fullscreen:update()
 	self.msaa:update()
 	self.bloom:update()
@@ -62,10 +68,16 @@ function MenuScene:draw()
 	love.graphics.rectangle("fill", 0, 0, Map.WIDTH, Map.HEIGHT)
 	love.graphics.setColor(1, 1, 1)
 
+	self.join:draw()
+	self.ip:draw()
 	self.fullscreen:draw()
 	self.msaa:draw()
 	self.bloom:draw()
 	self.quit:draw()
+end
+
+function MenuScene:textinput(text)
+	self.ip:textinput(text)
 end
 
 return MenuScene
