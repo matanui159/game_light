@@ -5,7 +5,7 @@ local Config = Object:extend()
 function Config:new()
 	local config = {
 		fullscreen = 1,
-		msaa = 2,
+		msaa = 3,
 		bloom = 3
 	}
 

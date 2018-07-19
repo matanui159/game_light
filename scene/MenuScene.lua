@@ -24,7 +24,8 @@ function MenuScene:new(font)
 		"MSAA: OFF",
 		"MSAA: 2x",
 		"MSAA: 4x",
-		"MSAA: 8x"
+		"MSAA: 8x",
+		"MSAA: 16x"
 	}, config.msaa)
 	self.msaa.change = function(index)
 		config.msaa = index
@@ -35,7 +36,8 @@ function MenuScene:new(font)
 		"BLOOM: OFF",
 		"BLOOM: LOW",
 		"BLOOM: MED",
-		"BLOOM: HIGH"
+		"BLOOM: HIGH",
+		"BLOOM: ULTRA"
 	}, config.bloom)
 	self.bloom.change = function(index)
 		config.bloom = index

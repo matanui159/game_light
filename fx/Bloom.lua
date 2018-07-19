@@ -20,20 +20,15 @@ function Bloom:new()
 end
 
 function Bloom:resize()
-	self.mul = 1 / 8
-	if config.bloom >= 3 then
-		self.mul = 1 / 4
-		if config.bloom >= 4 then
-			self.mul = 1 / 2
-		end
-	end
+	local div = {16, 8, 4, 2, 1}
+	self.mul = 1 / div[config.bloom]
 	local width  = love.graphics.getWidth()  * self.mul
 	local height = love.graphics.getHeight() * self.mul
 
 	self.blur.c1 = love.graphics.newCanvas(width, height)
 	self.blur.c2 = love.graphics.newCanvas(width, height)
 
-	local msaa = {0, 2, 4, 8}
+	local msaa = {0, 2, 4, 8, 16}
 	self.main = love.graphics.newCanvas(
 		love.graphics.getWidth(),
 		love.graphics.getHeight(),
@@ -73,6 +68,17 @@ function Bloom:postDraw()
 		end
 
 		if config.bloom >= 4 then
+			self:pass(self.blur.c1, self.blur.c2, 1.5)
+			self:pass(self.blur.c2, self.blur.c1, 2.5)
+			self:pass(self.blur.c1, self.blur.c2, 2.5)
+			self:pass(self.blur.c2, self.blur.c1, 3.5)
+		end
+
+		if config.bloom >= 5 then
+			self:pass(self.blur.c1, self.blur.c2, 1.5)
+			self:pass(self.blur.c2, self.blur.c1, 2.5)
+			self:pass(self.blur.c1, self.blur.c2, 2.5)
+			self:pass(self.blur.c2, self.blur.c1, 3.5)
 			self:pass(self.blur.c1, self.blur.c2, 1.5)
 			self:pass(self.blur.c2, self.blur.c1, 2.5)
 			self:pass(self.blur.c1, self.blur.c2, 2.5)
