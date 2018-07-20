@@ -15,9 +15,21 @@ local GameScene = Client:extend()
 function GameScene:new()
 	scene = self
 	GameScene.super.new(self)
-	self.server = Server()
-	self.host:connect("127.0.0.1:" .. Server.PORT)
+	self:disconnect(true)
+	self.bloom = Bloom()
 
+	self.ui = {}
+	self.ui.font = Font()
+	self.ui.menu = MenuButton(self.ui.font)
+end
+
+function GameScene:connect(peer)
+	if peer ~= self.local_peer then
+		self.server:destroy()
+		self.server = nil
+	end
+
+	GameScene.super.connect(self)
 	self.controllers = {
 		KeyboardController()
 	}
@@ -27,21 +39,13 @@ function GameScene:new()
 		end
 	end
 	self.next_controllers = {}
-
-	self.bloom = Bloom()
-
-	self.ui = {}
-	self.ui.font = Font()
-	self.ui.menu = MenuButton(self.ui.font)
 end
 
-function GameScene:connect()
-	print("CONNECT")
-	GameScene.super.connect(self)
-end
-
-function GameScene:disconnect()
-	print("DISCONNECT")
+function GameScene:disconnect(peer)
+	if peer ~= self.local_peer then
+		self.server = Server()
+		self.local_peer = self.host:connect("127.0.0.1:" .. self.server.port)
+	end
 end
 
 function GameScene:calcTransform()
@@ -68,7 +72,10 @@ function GameScene:update(dt)
 	if self.map.name then
 		self.ready = true
 	end
-	self.server:update(dt)
+
+	if self.server then
+		self.server:update(dt)
+	end
 	GameScene.super.update(self, dt)
 
 	if self.ready then

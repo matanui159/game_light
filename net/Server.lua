@@ -11,7 +11,7 @@ local Server = Client:extend()
 Server.PORT = 2852
 
 function Server:new()
-	Server.super.new(self, "*:" .. Server.PORT)
+	Server.super.new(self, Server.PORT)
 	for _, player in ipairs(self.players) do
 		player.controller = BotController()
 	end

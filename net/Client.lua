@@ -5,8 +5,18 @@ local RemoteController = require("game.controller.RemoteController")
 
 local Client = Object:extend()
 
-function Client:new(address)
-	self.host = enet.host_create(address)
+function Client:new(port)
+	if port then
+		self.port = port
+		self.host = enet.host_create("*:" .. self.port)
+		while not self.host do
+			self.port = self.port + 1
+			self.host = enet.host_create("*:" .. self.port)
+		end
+	else
+		self.host = enet.host_create()
+	end
+
 	self.peers = {}
 	self.world = love.physics.newWorld()
 	self.map = Map(self.world)
