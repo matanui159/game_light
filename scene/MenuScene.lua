@@ -13,7 +13,9 @@ function MenuScene:new(font)
 	self.ip = TextBox(font, "ENTER IP...", 4, 1, 6)
 	self.join = TextButton(font, "JOIN", 10, 1, 2)
 	self.join.action = function()
-		scene.host:connect(self.ip.input .. ":" .. Server.PORT)
+		if pcall(scene.host.connect, scene.host, self.ip.input .. ":" .. Server.PORT) then
+			self.join.text = "..."
+		end
 	end
 
 	self.fullscreen = SelectButton(font, 3, 3, 4, {

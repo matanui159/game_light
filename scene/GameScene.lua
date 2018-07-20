@@ -15,7 +15,7 @@ local GameScene = Client:extend()
 function GameScene:new()
 	scene = self
 	GameScene.super.new(self)
-	self:disconnect(true)
+	self:disconnect()
 	self.bloom = Bloom()
 
 	self.ui = {}
@@ -27,6 +27,7 @@ function GameScene:connect(peer)
 	if peer ~= self.local_peer then
 		self.server:destroy()
 		self.server = nil
+		self.remote_peer = perr
 	end
 
 	GameScene.super.connect(self)
@@ -39,10 +40,11 @@ function GameScene:connect(peer)
 		end
 	end
 	self.next_controllers = {}
+	self.menu = nil
 end
 
 function GameScene:disconnect(peer)
-	if peer ~= self.local_peer then
+	if peer == self.remote_peer then
 		self.server = Server()
 		self.local_peer = self.host:connect("127.0.0.1:" .. self.server.port)
 	end
