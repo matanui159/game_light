@@ -28,7 +28,7 @@ function Client:isLocal(player)
 	return not self:isRemote(player)
 end
 
-function Client:connect(peer)
+function Client:connect()
 	for _, player in ipairs(self.players) do
 		player.controller = RemoteController()
 	end

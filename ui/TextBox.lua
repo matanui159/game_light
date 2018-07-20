@@ -28,7 +28,7 @@ end
 function TextBox:textinput(text)
 	if text == "\b" then
 		self.input = self.input:sub(1, -2)
-	else
+	elseif #self.input < 18 then
 		self.input = self.input .. text
 	end
 end

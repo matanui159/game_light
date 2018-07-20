@@ -14,7 +14,11 @@ function Font:print(text, x, y, width)
 	love.graphics.push()
 	love.graphics.scale(1 / self.scale)
 	love.graphics.setFont(self.font)
-	love.graphics.printf(text, x * self.scale, (y + 0.15) * self.scale, width * self.scale, "center")
+	love.graphics.print(
+		text,
+		(x + width / 2) * self.scale - self.font:getWidth(text) / 2,
+		(y + 0.15) * self.scale
+	)
 	love.graphics.pop()
 end
 

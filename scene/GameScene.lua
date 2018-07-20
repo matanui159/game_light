@@ -35,6 +35,15 @@ function GameScene:new()
 	self.ui.menu = MenuButton(self.ui.font)
 end
 
+function GameScene:connect()
+	print("CONNECT")
+	GameScene.super.connect(self)
+end
+
+function GameScene:disconnect()
+	print("DISCONNECT")
+end
+
 function GameScene:calcTransform()
 	local width  = love.graphics.getWidth()
 	local height = love.graphics.getHeight()

@@ -1,4 +1,6 @@
 local Map = require("game.Map")
+local Server = require("net.Server")
+
 local TextButton = require("ui.TextButton")
 local SelectButton = require("ui.SelectButton")
 local TextBox = require("ui.TextBox")
@@ -10,6 +12,9 @@ function MenuScene:new(font)
 
 	self.ip = TextBox(font, "ENTER IP...", 4, 1, 6)
 	self.join = TextButton(font, "JOIN", 10, 1, 2)
+	self.join.action = function()
+		scene.host:connect(self.ip.input .. ":" .. Server.PORT)
+	end
 
 	self.fullscreen = SelectButton(font, 3, 3, 4, {
 		"FLLSCRN: OFF",

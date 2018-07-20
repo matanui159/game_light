@@ -59,6 +59,15 @@ function Server:connect(peer)
 	self:sendMap(peer)
 end
 
+function Server:disconnect(peer)
+	for _, player in ipairs(self.players) do
+		if player.peer == peer then
+			player.controller = BotController()
+			player.peer = nil
+		end
+	end
+end
+
 function Server:receive(data, peer)
 	if data.a == "+" then
 		for i, player in ipairs(self.players) do
