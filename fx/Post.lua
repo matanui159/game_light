@@ -21,20 +21,19 @@ function Post:new()
 end
 
 function Post:resize()
-	local div = {16, 8, 4, 2}
-	self.mul = 1 / div[config.bloom]
-	local width  = love.graphics.getWidth()  * self.mul
-	local height = love.graphics.getHeight() * self.mul
-
-	self.canvas.c1 = love.graphics.newCanvas(width, height)
-	self.canvas.c2 = love.graphics.newCanvas(width, height)
-
 	local msaa = {0, 2, 4, 8}
 	self.canvas.main = love.graphics.newCanvas(
 		love.graphics.getWidth(),
 		love.graphics.getHeight(),
 		{msaa = msaa[config.msaa]}
 	)
+
+	local div = {16, 8, 4, 2}
+	self.mul = 1 / div[config.bloom]
+	local width  = love.graphics.getWidth()  * self.mul
+	local height = love.graphics.getHeight() * self.mul
+	self.canvas.c1 = love.graphics.newCanvas(width, height)
+	self.canvas.c2 = love.graphics.newCanvas(width, height)
 end
 
 function Post:blur(from, to, offset)

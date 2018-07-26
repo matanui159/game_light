@@ -27,7 +27,7 @@ end
 
 function Player:update(dt, menu)
 	self.lerp:update()
-	self.controller:update()
+	self.controller:update(self)
 	self.lerp.x = self.body:getX()
 	self.lerp.y = self.body:getY()
 

@@ -2,6 +2,7 @@ local Controller = Object:extend()
 
 function Controller:new()
 	self.move = {x = 0, y = 0}
+	self.attack = {x = 0, y = 0}
 end
 
 function Controller:join()

@@ -22,11 +22,7 @@ function MenuScene:new(game, font)
 	}, config.fullscreen)
 	self.fullscreen.change = function(index)
 		config.fullscreen = index
-		if config.fullscreen == 1 then
-			love.window.setFullscreen(false)
-		else
-			love.window.setFullscreen(true)
-		end
+		love.window.setFullscreen(index == 2)
 	end
 
 	self.msaa = SelectButton(game, font, 3, 5, 4, {
