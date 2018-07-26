@@ -27,7 +27,10 @@ function love.update(dt)
 	timer = timer + dt
 	if timer >= CLOCK then
 		scene:update(CLOCK)
-		timer = timer % CLOCK
+		timer = timer - CLOCK
+		if timer > CLOCK then
+			timer = CLOCK
+		end
 	end
 end
 
@@ -39,7 +42,7 @@ function love.textinput(text)
 	scene:textinput(text)
 end
 
-function love.keypressed(key, _, rep)
+function love.keypressed(key)
 	if key == "backspace" then
 		love.textinput("\b")
 	end

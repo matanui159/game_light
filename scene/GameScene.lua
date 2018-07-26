@@ -1,7 +1,7 @@
 local Client = require("net.Client")
 local Server = require("net.Server")
 
-local Bloom = require("fx.Bloom")
+local Post = require("fx.Post")
 local Map = require("game.Map")
 
 local KeyboardController = require("game.controller.KeyboardController")
@@ -12,14 +12,14 @@ local MenuButton = require("ui.MenuButton")
 
 local GameScene = Client:extend()
 
-function GameScene:new()
+function GameScene:new(config)
 	scene = self
 	GameScene.super.new(self)
 	self:disconnect()
-	self.bloom = Bloom()
+	self.post = Post()
 
 	self.ui = {}
-	self.ui.font = Font()
+	self.ui.font = Font(self)
 	self.ui.menu = MenuButton(self.ui.font)
 end
 
@@ -27,7 +27,7 @@ function GameScene:connect(peer)
 	if peer ~= self.local_peer then
 		self.server:destroy()
 		self.server = nil
-		self.remote_peer = perr
+		self.remote_peer = peer
 	end
 
 	GameScene.super.connect(self)
@@ -65,7 +65,7 @@ function GameScene:calcTransform()
 end
 
 function GameScene:resize(tx, ty, scale)
-	self.bloom:resize()
+	self.post:resize()
 
 	self.ui.font:resize()
 end
@@ -102,7 +102,7 @@ end
 
 function GameScene:draw(lerp)
 	if self.ready then
-		self.bloom:preDraw()
+		self.post:preDraw()
 
 		local tx, ty, scale = self:calcTransform()
 		love.graphics.push()
@@ -121,7 +121,7 @@ function GameScene:draw(lerp)
 		self.ui.menu:draw()
 
 		love.graphics.pop()
-		self.bloom:postDraw()
+		self.post:postDraw()
 	end
 end
 

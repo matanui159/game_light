@@ -35,24 +35,22 @@ function MenuScene:new(font)
 		"MSAA: OFF",
 		"MSAA: LOW",
 		"MSAA: MED",
-		"MSAA: HIGH",
-		"MSAA: ULTRA"
+		"MSAA: HIGH"
 	}, config.msaa)
 	self.msaa.change = function(index)
 		config.msaa = index
-		scene.bloom:resize()
+		scene.post:resize()
 	end
 
 	self.bloom = SelectButton(font, 9, 3, 4, {
 		"BLOOM: OFF",
 		"BLOOM: LOW",
 		"BLOOM: MED",
-		"BLOOM: HIGH",
-		"BLOOM: ULTRA"
+		"BLOOM: HIGH"
 	}, config.bloom)
 	self.bloom.change = function(index)
 		config.bloom = index
-		scene.bloom:resize()
+		scene.post:resize()
 	end
 
 	self.quit = TextButton(font, "QUIT", 6, 7, 4)

@@ -1,11 +1,12 @@
 local Font = Object:extend()
 
-function Font:new()
+function Font:new(scene)
+	self.scene = scene
 	self:resize()
 end
 
 function Font:resize()
-	local tx, ty, scale = scene:calcTransform()
+	local tx, ty, scale = self.scene:calcTransform()
 	self.scale = scale
 	self.font = love.graphics.newFont("assets/font/bold.ttf", scale / 2)
 end
