@@ -13,14 +13,13 @@ local MenuButton = require("ui.MenuButton")
 local GameScene = Client:extend()
 
 function GameScene:new(config)
-	scene = self
 	GameScene.super.new(self)
 	self:disconnect()
 	self.post = Post()
 
 	self.ui = {}
 	self.ui.font = Font(self)
-	self.ui.menu = MenuButton(self.ui.font)
+	self.ui.menu = MenuButton(self, self.ui.font)
 end
 
 function GameScene:connect(peer)

@@ -25,13 +25,13 @@ function Player:new(world, x, y, index)
 	self.index = index
 end
 
-function Player:update(dt)
+function Player:update(dt, menu)
 	self.lerp:update()
 	self.controller:update()
 	self.lerp.x = self.body:getX()
 	self.lerp.y = self.body:getY()
 
-	if not scene.menu then
+	if not menu then
 		local move = self.controller.move
 		local len = math.sqrt(move.x * move.x + move.y * move.y)
 		if len > 1 then

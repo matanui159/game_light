@@ -6,6 +6,7 @@ local Config = require("Config")
 local GameScene = require("scene.GameScene")
 local timer = 0
 local CLOCK = 0.05
+local scene
 
 function love.load()
 	love.keyboard.setKeyRepeat(true)

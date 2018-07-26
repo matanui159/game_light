@@ -2,8 +2,8 @@ local TextButton = require("ui.TextButton")
 
 local SelectButton = TextButton:extend()
 
-function SelectButton:new(font, x, y, width, options, default)
-	SelectButton.super.new(self, font, options[default], x, y, width)
+function SelectButton:new(scene, font, x, y, width, options, default)
+	SelectButton.super.new(self, scene, font, options[default], x, y, width)
 	self.options = options
 	self.index = default
 end

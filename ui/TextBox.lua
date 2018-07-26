@@ -2,8 +2,8 @@ local TextButton = require("ui.TextButton")
 
 local TextBox = TextButton:extend()
 
-function TextBox:new(font, place, x, y, width)
-	TextBox.super.new(self, font, "", x, y, width)
+function TextBox:new(scene, font, place, x, y, width)
+	TextBox.super.new(self, scene, font, "", x, y, width)
 	self.place = place
 	self.input = ""
 end

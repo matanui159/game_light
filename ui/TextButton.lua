@@ -2,8 +2,8 @@ local Button = require("ui.Button")
 
 local TextButton = Button:extend()
 
-function TextButton:new(font, text, x, y, width)
-	TextButton.super.new(self, x, y, width)
+function TextButton:new(scene, font, text, x, y, width)
+	TextButton.super.new(self, scene, x, y, width)
 	self.font = font
 	self.text = text
 end

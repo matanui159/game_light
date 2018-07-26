@@ -7,18 +7,16 @@ local TextBox = require("ui.TextBox")
 
 local MenuScene = Object:extend()
 
-function MenuScene:new(font)
-	self.font = font
-
-	self.ip = TextBox(font, "ENTER IP...", 4, 1, 6)
-	self.join = TextButton(font, "JOIN", 10, 1, 2)
+function MenuScene:new(game, font)
+	self.ip = TextBox(game, font, "ENTER IP...", 4, 1, 6)
+	self.join = TextButton(game, font, "JOIN", 10, 1, 2)
 	self.join.action = function()
-		if pcall(scene.host.connect, scene.host, self.ip.input .. ":" .. Server.PORT) then
+		if pcall(game.host.connect, game.host, self.ip.input .. ":" .. Server.PORT) then
 			self.join.text = "..."
 		end
 	end
 
-	self.fullscreen = SelectButton(font, 3, 3, 4, {
+	self.fullscreen = SelectButton(game, font, 3, 3, 4, {
 		"FLLSCRN: OFF",
 		"FLLSCRN: ON"
 	}, config.fullscreen)
@@ -31,7 +29,7 @@ function MenuScene:new(font)
 		end
 	end
 
-	self.msaa = SelectButton(font, 3, 5, 4, {
+	self.msaa = SelectButton(game, font, 3, 5, 4, {
 		"MSAA: OFF",
 		"MSAA: LOW",
 		"MSAA: MED",
@@ -39,10 +37,10 @@ function MenuScene:new(font)
 	}, config.msaa)
 	self.msaa.change = function(index)
 		config.msaa = index
-		scene.post:resize()
+		game.post:resize()
 	end
 
-	self.bloom = SelectButton(font, 9, 3, 4, {
+	self.bloom = SelectButton(game, font, 9, 3, 4, {
 		"BLOOM: OFF",
 		"BLOOM: LOW",
 		"BLOOM: MED",
@@ -50,10 +48,10 @@ function MenuScene:new(font)
 	}, config.bloom)
 	self.bloom.change = function(index)
 		config.bloom = index
-		scene.post:resize()
+		game.post:resize()
 	end
 
-	self.quit = TextButton(font, "QUIT", 6, 7, 4)
+	self.quit = TextButton(game, font, "QUIT", 6, 7, 4)
 	self.quit.action = function()
 		love.event.quit()
 	end

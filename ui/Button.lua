@@ -1,12 +1,13 @@
 local Button = Object:extend()
 
-function Button:new(x, y, width)
+function Button:new(scene, x, y, width)
 	if not Button.load then
 		Button.tiles = love.graphics.newImage("assets/tiles.png")
 		Button.tiles:setFilter("linear", "nearest")
 		Button.load = true
 	end
 
+	self.scene = scene
 	self.x = x
 	self.y = y
 	self.width = width
@@ -32,7 +33,7 @@ end
 function Button:update()
 	if love.mouse.isDown(1) then
 		if self.state ~= "missed" then
-			local tx, ty, scale = scene:calcTransform()
+			local tx, ty, scale = self.scene:calcTransform()
 			local x = (love.mouse.getX() - tx) / scale
 			local y = (love.mouse.getY() - ty) / scale
 			
