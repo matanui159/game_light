@@ -96,7 +96,7 @@ function Client:update(dt)
 
 	self.world:update(dt)
 	for index, player in ipairs(self.players) do
-		player:update(dt, self.menu)
+		player:update(dt, self.world, self.menu)
 		if self:isLocal(player) then
 			self:send({
 				p = index,

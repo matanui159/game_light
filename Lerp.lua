@@ -22,8 +22,12 @@ end
 function Lerp:__newindex(key, value)
 	local values = self.__values
 	if values[key] ~= nil then
-		values[key].value = value
-	else
+		if value == nil then
+			values[key] = nil
+		else
+			values[key].value = value
+		end
+	elseif value ~= nil then
 		values[key] = {
 			value = value,
 			old = value

@@ -14,12 +14,12 @@ function Player:new(world, x, y, index)
 	self.lerp = Lerp()
 	self.lerp.x = x
 	self.lerp.y = y
-	self.lerp.angle = 0
 	self.attack = false
 
 	local shape = love.physics.newCircleShape(Player.RADIUS)
 	self.body = love.physics.newBody(world, x, y, "dynamic")
 	self.fixture = love.physics.newFixture(self.body, shape)
+	self.fixture:setUserData(self)
 	self.body:setMass(1)
 	self.body:setLinearDamping(20, 20)
 
@@ -27,7 +27,7 @@ function Player:new(world, x, y, index)
 	self.index = index
 end
 
-function Player:update(dt, menu)
+function Player:update(dt, world, menu)
 	self.lerp:update()
 	self.lerp.x = self.body:getX()
 	self.lerp.y = self.body:getY()
@@ -40,18 +40,49 @@ function Player:update(dt, menu)
 			move.x = move.x / len
 			move.y = move.y / len
 		end
+		self.body:applyForce(move.x * 100, move.y * 100)
 
 		local attack = self.controller.attack
 		if attack.x ~= 0 or attack.y ~= 0 then
-			self.lerp.angle = math.atan2(attack.y, attack.x)
-			if not self.attack then
-				self.lerp.__values.angle.old = self.lerp.__values.angle.value
-			end
 			self.attack = true
+			local x = self.lerp.x
+			local y = self.lerp.y
+			local nx = attack.x
+			local ny = attack.y
+			local len = math.sqrt(nx * nx + ny * ny)
+			nx = nx / len
+			ny = ny / len
+
+			for i = 1, 3 do
+				local close = {}
+				world:rayCast(x, y, x + nx * 16, y + ny * 16, function(fixture, ix, iy, nx, ny)
+					local dx = x - ix
+					local dy = y - iy
+					local dist = math.sqrt(dx * dx + dy * dy)
+					if not close.dist or dist < close.dist then
+						close.dist = dist
+						close.ix = ix
+						close.iy = iy
+						close.nx = nx
+						close.ny = ny
+					end
+					return -1
+				end)
+
+				self.lerp["a" .. i .. "x"] = close.ix
+				self.lerp["a" .. i .. "y"] = close.iy
+				x = close.ix
+				y = close.iy
+				nx = nx + close.nx * 2
+				ny = ny + close.ny * 2
+			end
 		else
 			self.attack = false
+			self.lerp.a1x = nil
+			self.lerp.a1y = nil
+			self.lerp.a2x = nil
+			self.lerp.a2y = nil
 		end
-		self.body:applyForce(move.x * 100, move.y * 100)
 	else
 		self.attack = false
 	end
@@ -64,7 +95,10 @@ function Player:draw(lerp)
 	love.graphics.setColor(r, g, b)
 	love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, Player.RADIUS)
 	if self.attack then
-		love.graphics.line(self.lerp.x, self.lerp.y, self.lerp.x + math.cos(self.lerp.angle), self.lerp.y + math.sin(self.lerp.angle))
+		love.graphics.setLineWidth(0.05)
+		love.graphics.line(self.lerp.x, self.lerp.y, self.lerp.a1x, self.lerp.a1y)
+		love.graphics.line(self.lerp.a1x, self.lerp.a1y, self.lerp.a2x, self.lerp.a2y)
+		love.graphics.line(self.lerp.a2x, self.lerp.a2y, self.lerp.a3x, self.lerp.a3y)
 	end
 	love.graphics.setColor(1, 1, 1)
 end

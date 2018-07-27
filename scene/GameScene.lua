@@ -108,10 +108,10 @@ function GameScene:draw(lerp)
 		love.graphics.translate(tx, ty)
 		love.graphics.scale(scale)
 
-		self.map:draw()
 		for _, player in ipairs(self.players) do
 			player:draw(lerp)
 		end
+		self.map:draw()
 
 		if self.menu then
 			self.menu:draw()
