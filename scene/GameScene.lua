@@ -31,7 +31,7 @@ function GameScene:connect(peer)
 
 	GameScene.super.connect(self)
 	self.controllers = {
-		KeyboardController()
+		KeyboardController(self)
 	}
 	for _, gamepad in ipairs(love.joystick.getJoysticks()) do
 		if gamepad:isGamepad() then

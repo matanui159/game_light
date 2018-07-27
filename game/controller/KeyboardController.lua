@@ -30,7 +30,15 @@ function KeyboardController:update(player)
 		move.y = move.y + 1
 	end
 
-	
+	local attack = self.attack
+	if love.mouse.isDown(1) then
+		local tx, ty, scale = self.scene:calcTransform()
+		attack.x = (love.mouse.getX() - tx) / scale - player.lerp.x
+		attack.y = (love.mouse.getY() - ty) / scale - player.lerp.y
+	else
+		attack.x = 0
+		attack.y = 0
+	end
 end
 
 return KeyboardController
