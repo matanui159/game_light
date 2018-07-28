@@ -76,6 +76,15 @@ function Client:receive(data, peer)
 
 	if data.a == "p" or (data.a == "=" and self:isRemote(player)) then
 		player.body:setPosition(data.x, data.y)
+		local attack = player.controller.attack
+		if data.k then
+			attack.x = math.cos(data.k)
+			attack.y = math.sin(data.k)
+		else
+			attack.x = 0
+			attack.y = 0
+		end
+		player.lerp.health = data.h
 	end
 end
 
@@ -96,13 +105,15 @@ function Client:update(dt)
 
 	self.world:update(dt)
 	for index, player in ipairs(self.players) do
-		player:update(dt, self.world, self.menu)
+		player:update(dt, self.menu)
 		if self:isLocal(player) then
 			self:send({
 				p = index,
 				a = "=",
 				x = player.lerp.x,
-				y = player.lerp.y
+				y = player.lerp.y,
+				k = player.lerp.attack,
+				h = player.lerp.health
 			}, nil, true)
 		end
 	end

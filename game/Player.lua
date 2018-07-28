@@ -14,7 +14,7 @@ function Player:new(world, x, y, index)
 	self.lerp = Lerp()
 	self.lerp.x = x
 	self.lerp.y = y
-	self.attack = false
+	self.lerp.health = 1
 
 	local shape = love.physics.newCircleShape(Player.RADIUS)
 	self.body = love.physics.newBody(world, x, y, "dynamic")
@@ -23,11 +23,49 @@ function Player:new(world, x, y, index)
 	self.body:setMass(1)
 	self.body:setLinearDamping(20, 20)
 
+	self.world = world
 	self.controller = Controller()
 	self.index = index
 end
 
-function Player:update(dt, world, menu)
+function Player:calcLaser(callback)
+	local x = self.lerp.x
+	local y = self.lerp.y
+	local nx = math.cos(self.lerp.attack)
+	local ny = math.sin(self.lerp.attack)
+
+	for i = 1, 3 do
+		local close = {}
+		self.world:rayCast(x, y, x + nx * 16, y + ny * 16, function(fixture, ix, iy, nx, ny)
+			local dx = x - ix
+			local dy = y - iy
+			local dist = math.sqrt(dx * dx + dy * dy)
+			if not close.dist or dist < close.dist then
+				close.dist = dist
+				close.fixture = fixture
+				close.ix = ix
+				close.iy = iy
+				close.nx = nx
+				close.ny = ny
+			end
+			return -1
+		end)
+
+		if close.dist then
+			callback(x, y, close.ix, close.iy, close.fixture)
+			x = close.ix
+			y = close.iy
+
+			local dot = nx * close.nx + ny * close.ny
+			nx = nx - 2 * dot * close.nx
+			ny = ny - 2 * dot * close.ny
+		else
+			break
+		end
+	end
+end
+
+function Player:update(dt, menu)
 	self.lerp:update()
 	self.lerp.x = self.body:getX()
 	self.lerp.y = self.body:getY()
@@ -44,62 +82,48 @@ function Player:update(dt, world, menu)
 
 		local attack = self.controller.attack
 		if attack.x ~= 0 or attack.y ~= 0 then
-			self.attack = true
-			local x = self.lerp.x
-			local y = self.lerp.y
-			local nx = attack.x
-			local ny = attack.y
-			local len = math.sqrt(nx * nx + ny * ny)
-			nx = nx / len
-			ny = ny / len
-
-			for i = 1, 3 do
-				local close = {}
-				world:rayCast(x, y, x + nx * 16, y + ny * 16, function(fixture, ix, iy, nx, ny)
-					local dx = x - ix
-					local dy = y - iy
-					local dist = math.sqrt(dx * dx + dy * dy)
-					if not close.dist or dist < close.dist then
-						close.dist = dist
-						close.ix = ix
-						close.iy = iy
-						close.nx = nx
-						close.ny = ny
-					end
-					return -1
-				end)
-
-				self.lerp["a" .. i .. "x"] = close.ix
-				self.lerp["a" .. i .. "y"] = close.iy
-				x = close.ix
-				y = close.iy
-				nx = nx + close.nx * 2
-				ny = ny + close.ny * 2
+			local old = self.lerp.attack
+			self.lerp.attack = math.atan2(attack.y, attack.x)
+			if old then
+				while self.lerp.attack - old < -math.pi do
+					self.lerp.attack = self.lerp.attack + 2 * math.pi
+				end
+				while self.lerp.attack - old > math.pi do
+					self.lerp.attack = self.lerp.attack - 2 * math.pi
+				end
 			end
+
+			self:calcLaser(function(x1, y1, x2, y2, fixture)
+				local player = fixture:getUserData()
+				if player and player ~= self then
+					player.lerp.health = player.lerp.health - 2 * dt
+					if player.lerp.health < 0 then
+						player.lerp.health = 0
+					end
+				end
+			end)
 		else
-			self.attack = false
-			self.lerp.a1x = nil
-			self.lerp.a1y = nil
-			self.lerp.a2x = nil
-			self.lerp.a2y = nil
+			self.lerp.attack = nil
 		end
 	else
 		self.attack = false
 	end
 end
 
-function Player:draw(lerp)
+function Player:draw(lerp, world)
 	self.lerp:setLerp(lerp)
+	love.graphics.setColor(unpack(Player.COLORS[self.index]))
 
-	local r, g, b = unpack(Player.COLORS[self.index])
-	love.graphics.setColor(r, g, b)
-	love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, Player.RADIUS)
-	if self.attack then
+	if self.lerp.attack then
 		love.graphics.setLineWidth(0.05)
-		love.graphics.line(self.lerp.x, self.lerp.y, self.lerp.a1x, self.lerp.a1y)
-		love.graphics.line(self.lerp.a1x, self.lerp.a1y, self.lerp.a2x, self.lerp.a2y)
-		love.graphics.line(self.lerp.a2x, self.lerp.a2y, self.lerp.a3x, self.lerp.a3y)
+		self:calcLaser(function(x1, y1, x2, y2)
+			love.graphics.line(x1, y1, x2, y2)
+		end)
 	end
+
+	love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, Player.RADIUS)
+	love.graphics.setColor(0, 0, 0)
+	love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, (1 - self.lerp.health) * Player.RADIUS)
 	love.graphics.setColor(1, 1, 1)
 end
 
