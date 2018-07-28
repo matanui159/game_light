@@ -89,6 +89,10 @@ function Client:receive(data, peer)
 end
 
 function Client:update(dt)
+	for _, player in ipairs(self.players) do
+		player.lerp:update()
+	end
+
 	local event = self.host:service()
 	while event do
 		if event.type == "connect" then

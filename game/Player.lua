@@ -66,7 +66,6 @@ function Player:calcLaser(callback)
 end
 
 function Player:update(dt, menu)
-	self.lerp:update()
 	self.lerp.x = self.body:getX()
 	self.lerp.y = self.body:getY()
 
@@ -98,7 +97,7 @@ function Player:update(dt, menu)
 				if player and player ~= self then
 					player.lerp.health = player.lerp.health - 2 * dt
 					if player.lerp.health < 0 then
-						player.lerp.health = 0
+						player.lerp.health = 1
 					end
 				end
 			end)
@@ -110,7 +109,7 @@ function Player:update(dt, menu)
 	end
 end
 
-function Player:draw(lerp, world)
+function Player:draw(lerp)
 	self.lerp:setLerp(lerp)
 	love.graphics.setColor(unpack(Player.COLORS[self.index]))
 
@@ -123,7 +122,7 @@ function Player:draw(lerp, world)
 
 	love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, Player.RADIUS)
 	love.graphics.setColor(0, 0, 0)
-	love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, (1 - self.lerp.health) * Player.RADIUS)
+	love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, (1 - self.lerp.health * self.lerp.health) * Player.RADIUS)
 	love.graphics.setColor(1, 1, 1)
 end
 

@@ -46,7 +46,8 @@ function Server:newGame()
 			p = index,
 			a = "p",
 			x = x,
-			y = y
+			y = y,
+			h = 1
 		})
 	end
 end
