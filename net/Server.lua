@@ -93,7 +93,7 @@ function Server:receive(data, peer)
 	end
 
 	if data.a == "p" then
-		if peer == player.peerk then
+		if peer == player.peer then
 			player.ignore = false
 		end
 	elseif data.a == "+" then
