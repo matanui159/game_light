@@ -4,6 +4,7 @@ local Server = require("net.Server")
 local Post = require("fx.Post")
 local Map = require("game.Map")
 
+local RemoteController = require("game.controller.RemoteController")
 local KeyboardController = require("game.controller.KeyboardController")
 local GamepadController  = require("game.controller.GamepadController")
 
@@ -91,6 +92,17 @@ function GameScene:update(dt)
 						a = "+"
 					})
 					break
+				end
+			end
+
+			for i, player in ipairs(self.players) do
+				if player.controller:leave() then
+					table.insert(self.controllers, player.controller)
+					player.controller = RemoteController()
+					self:send({
+						p = i,
+						a = "-"
+					})
 				end
 			end
 		end

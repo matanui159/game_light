@@ -70,7 +70,6 @@ function Client:receive(data, peer)
 	end
 
 	if data.a == "+" then
-		player.peer = peer
 		player.controller = table.remove(self.next_controllers)
 	end
 
@@ -85,11 +84,32 @@ function Client:receive(data, peer)
 			attack.y = 0
 		end
 		player.lerp.health = data.h
+
+		if data.a == "p" then
+			self:send({
+				p = data.p,
+				a = "p"
+			}, peer)
+		end
 	end
 end
 
+function Client:gameOver()
+	local other = false
+	for i, player in ipairs(self.players) do
+		if player.lerp.health > 0 then
+			if other then
+				return false
+			else
+				other = true
+			end
+		end
+	end
+	return true
+end
+
 function Client:update(dt)
-	for _, player in ipairs(self.players) do
+	for i, player in ipairs(self.players) do
 		player.lerp:update()
 	end
 

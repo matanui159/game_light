@@ -30,25 +30,38 @@ function Server:newGame()
 	self.map = Map(self.world, "test")
 	self:sendMap()
 
-	for index, player in ipairs(self.players) do
+	for i, player in ipairs(self.players) do
 		local x = 1.5
-		if index % 2 == 0 then
+		if i % 2 == 0 then
 			x = 14.5
 		end
 
 		local y = 1.5
-		if index >= 3 then
+		if i >= 3 then
 			y = 7.5
 		end
 
 		player.body:setPosition(x, y)
+		player.lerp.health = 1
 		self:send({
-			p = index,
+			p = i,
 			a = "p",
 			x = x,
 			y = y,
 			h = 1
 		})
+
+		if player.peer then
+			player.ignore = true
+		end
+	end
+end
+
+function Server:isRemote(player)
+	if player.ignore then
+		return false
+	else
+		return Server.super.isRemote(self, player)
 	end
 end
 
@@ -61,16 +74,29 @@ function Server:connect(peer)
 end
 
 function Server:disconnect(peer)
-	for _, player in ipairs(self.players) do
+	for i, player in ipairs(self.players) do
 		if player.peer == peer then
 			player.controller = BotController()
 			player.peer = nil
+			player.ignore = false
 		end
 	end
 end
 
 function Server:receive(data, peer)
-	if data.a == "+" then
+	local player = self.players[data.p]
+
+	if data.a == "-" then
+		player.controller = BotController()
+		player.peer = nil
+		player.ignore = false
+	end
+
+	if data.a == "p" then
+		if peer == player.peerk then
+			player.ignore = false
+		end
+	elseif data.a == "+" then
 		for i, player in ipairs(self.players) do
 			if player.controller:is(BotController) then
 				player.peer = peer
@@ -85,6 +111,13 @@ function Server:receive(data, peer)
 		end
 	else
 		Server.super.receive(self, data, peer)
+	end
+end
+
+function Server:update(dt)
+	Server.super.update(self, dt)
+	if self:gameOver() then
+		self:newGame()
 	end
 end
 
