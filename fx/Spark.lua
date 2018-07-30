@@ -9,7 +9,7 @@ function Spark:new(scene)
 		Spark.load = true
 	end
 
-	local p = love.graphics.newParticleSystem(Spark.spark, 300)
+	local p = love.graphics.newParticleSystem(Spark.spark, 500)
 	p:setParticleLifetime(0.3, 0.5)
 	p:setSpread(math.pi)
 	p:setRelativeRotation(true)
@@ -34,7 +34,7 @@ function Spark:setColor(r, g, b)
 end
 
 function Spark:emit(x, y, angle)
-	local rate = {0, 2, 4, 8}
+	local rate = {0, 2, 4, 8, 16}
 	self.particles:setPosition(x * self.scale, y * self.scale)
 	self.particles:setDirection(angle)
 	self.particles:emit(rate[config.spark])

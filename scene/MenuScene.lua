@@ -38,7 +38,8 @@ function MenuScene:new(game, font)
 		"MSAA: OFF",
 		"MSAA: LOW",
 		"MSAA: MED",
-		"MSAA: HIGH"
+		"MSAA: HIGH",
+		"MSAA: ULTRA"
 	}, config.msaa)
 	self.msaa.change = function(index)
 		config.msaa = index
@@ -49,7 +50,8 @@ function MenuScene:new(game, font)
 		"BLOOM: OFF",
 		"BLOOM: LOW",
 		"BLOOM: MED",
-		"BLOOM: HIGH"
+		"BLOOM: HIGH",
+		"BLOOM: ULTRA"
 	}, config.bloom)
 	self.bloom.change = function(index)
 		config.bloom = index
@@ -60,7 +62,8 @@ function MenuScene:new(game, font)
 		"SPARK: OFF",
 		"SPARK: LOW",
 		"SPARK: MED",
-		"SPARK: HIGH"
+		"SPARK: HIGH",
+		"SPARK: ULTRA"
 	}, config.spark)
 	self.spark.change = function(index)
 		config.spark = index

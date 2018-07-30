@@ -12,9 +12,9 @@ function Config:new()
 
 	local limits = {
 		fullscreen = 2,
-		msaa = 4,
-		bloom = 4,
-		spark = 4,
+		msaa = 5,
+		bloom = 5,
+		spark = 5,
 	}
 
 	local data = love.filesystem.read("config")

@@ -21,14 +21,14 @@ function Post:new()
 end
 
 function Post:resize()
-	local msaa = {0, 2, 4, 8}
+	local msaa = {0, 2, 4, 8, 16}
 	self.canvas.main = love.graphics.newCanvas(
 		love.graphics.getWidth(),
 		love.graphics.getHeight(),
 		{msaa = msaa[config.msaa]}
 	)
 
-	local div = {16, 8, 4, 2}
+	local div = {16, 8, 4, 2, 1}
 	self.mul = 1 / div[config.bloom]
 	local width  = love.graphics.getWidth()  * self.mul
 	local height = love.graphics.getHeight() * self.mul
@@ -68,6 +68,13 @@ function Post:postDraw()
 		end
 
 		if config.bloom >= 4 then
+			self:blur(self.canvas.c1, self.canvas.c2, 1.5)
+			self:blur(self.canvas.c2, self.canvas.c1, 2.5)
+			self:blur(self.canvas.c1, self.canvas.c2, 2.5)
+			self:blur(self.canvas.c2, self.canvas.c1, 3.5)
+		end
+
+		if config.bloom >= 5 then
 			self:blur(self.canvas.c1, self.canvas.c2, 1.5)
 			self:blur(self.canvas.c2, self.canvas.c1, 2.5)
 			self:blur(self.canvas.c1, self.canvas.c2, 2.5)
