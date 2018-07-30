@@ -11,6 +11,7 @@ local scene
 function love.load()
 	love.keyboard.setKeyRepeat(true)
 	love.physics.setMeter(1)
+	math.randomseed(love.timer.getTime())
 
 	config = Config()
 	if config.fullscreen == 2 then
