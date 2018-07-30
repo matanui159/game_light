@@ -2,6 +2,7 @@ local Client = require("net.Client")
 local Server = require("net.Server")
 
 local Post = require("fx.Post")
+local Spark = require("fx.Spark")
 local Map = require("game.Map")
 
 local RemoteController = require("game.controller.RemoteController")
@@ -14,7 +15,7 @@ local MenuButton = require("ui.MenuButton")
 local GameScene = Client:extend()
 
 function GameScene:new(config)
-	GameScene.super.new(self)
+	GameScene.super.new(self, nil, true)
 	self:disconnect()
 	self.post = Post()
 
@@ -64,8 +65,9 @@ function GameScene:calcTransform()
 	end
 end
 
-function GameScene:resize(tx, ty, scale)
+function GameScene:resize()
 	self.post:resize()
+	self.spark:resize()
 
 	self.ui.font:resize()
 end

@@ -6,6 +6,9 @@ function SelectButton:new(scene, font, x, y, width, options, default)
 	SelectButton.super.new(self, scene, font, options[default], x, y, width)
 	self.options = options
 	self.index = default
+	if self.index > #self.options then
+		self.index = #self.options
+	end
 end
 
 function SelectButton.change(index)

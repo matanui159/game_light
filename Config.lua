@@ -6,12 +6,20 @@ function Config:new()
 	local config = {
 		fullscreen = 1,
 		msaa = 3,
-		bloom = 3
+		bloom = 3,
+		spark = 3
 	}
 
 	local data = love.filesystem.read("config")
 	if data then
-		config = binser.dn(data)
+		c = binser.dn(data)
+		if type(c) == "table" then
+			for k, v in pairs(config) do
+				if c[k] ~= nil then
+					config[k] = c[k]
+				end
+			end
+		end
 	end
 
 	rawset(self, "__config", config)

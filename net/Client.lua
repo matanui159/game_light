@@ -1,11 +1,12 @@
 local binser = require("net.binser")
+local Spark = require("fx.Spark")
 local Map = require("game.Map")
 local Player = require("game.Player")
 local RemoteController = require("game.controller.RemoteController")
 
 local Client = Object:extend()
 
-function Client:new(port)
+function Client:new(port, spark)
 	if port then
 		self.port = port
 		self.host = enet.host_create("*:" .. self.port)
@@ -22,7 +23,11 @@ function Client:new(port)
 	self.map = Map(self.world)
 	self.players = {}
 	for i = 1, 4 do
-		self.players[i] = Player(self.world, 8, 4.5, i)
+		local s = nil
+		if spark then
+			s = Spark(self)
+		end
+		self.players[i] = Player(self.world, s, 8, 4.5, i)
 	end
 end
 

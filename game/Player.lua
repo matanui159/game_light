@@ -11,7 +11,7 @@ Player.COLORS = {
 	{1, 1, 0}
 }
 
-function Player:new(world, x, y, index)
+function Player:new(world, spark, x, y, index)
 	self.lerp = Lerp()
 	self.lerp.x = x
 	self.lerp.y = y
@@ -27,6 +27,10 @@ function Player:new(world, x, y, index)
 	self.world = world
 	self.controller = Controller()
 	self.index = index
+	if spark then
+		self.spark = spark
+		self.spark:setColor(unpack(Player.COLORS[index]))
+	end
 end
 
 function Player:calcLaser(callback)
@@ -53,7 +57,7 @@ function Player:calcLaser(callback)
 		end)
 
 		if close.dist then
-			callback(x, y, close.ix, close.iy, close.fixture)
+			callback(x, y, close.ix, close.iy, math.atan2(close.ny, close.nx), close.fixture)
 			x = close.ix
 			y = close.iy
 
@@ -93,7 +97,11 @@ function Player:update(dt, menu)
 				end
 			end
 
-			self:calcLaser(function(x1, y1, x2, y2, fixture)
+			self:calcLaser(function(x1, y1, x2, y2, angle, fixture)
+				if self.spark then
+					self.spark:emit(x2, y2, angle)
+				end
+
 				local player = fixture:getUserData()
 				if player and player ~= self and not player.controller:is(RemoteController) then
 					player.lerp.health = player.lerp.health - 2 * dt
@@ -106,6 +114,10 @@ function Player:update(dt, menu)
 			end)
 		else
 			self.lerp.attack = nil
+		end
+
+		if self.spark then
+			self.spark:update(dt)
 		end
 	end
 end
@@ -120,6 +132,10 @@ function Player:draw(lerp)
 			self:calcLaser(function(x1, y1, x2, y2)
 				love.graphics.line(x1, y1, x2, y2)
 			end)
+		end
+
+		if self.spark then
+			self.spark:draw(lerp)
 		end
 
 		love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, Player.RADIUS)

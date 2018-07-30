@@ -47,6 +47,16 @@ function MenuScene:new(game, font)
 		game.post:resize()
 	end
 
+	self.spark = SelectButton(game, font, 9, 5, 4, {
+		"SPARK: OFF",
+		"SPARK: LOW",
+		"SPARK: MED",
+		"SPARK: HIGH"
+	}, config.spark)
+	self.spark.change = function(index)
+		config.spark = index
+	end
+
 	self.quit = TextButton(game, font, "QUIT", 6, 7, 4)
 	self.quit.action = function()
 		love.event.quit()
@@ -59,6 +69,7 @@ function MenuScene:update()
 	self.fullscreen:update()
 	self.msaa:update()
 	self.bloom:update()
+	self.spark:update()
 	self.quit:update()
 end
 
@@ -72,6 +83,7 @@ function MenuScene:draw()
 	self.fullscreen:draw()
 	self.msaa:draw()
 	self.bloom:draw()
+	self.spark:draw()
 	self.quit:draw()
 end
 
