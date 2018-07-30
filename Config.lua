@@ -10,13 +10,24 @@ function Config:new()
 		spark = 3
 	}
 
+	local limits = {
+		fullscreen = 2,
+		msaa = 4,
+		bloom = 4,
+		spark = 4,
+	}
+
 	local data = love.filesystem.read("config")
 	if data then
 		c = binser.dn(data)
 		if type(c) == "table" then
 			for k, v in pairs(config) do
 				if c[k] ~= nil then
-					config[k] = c[k]
+					if c[k] > limits[k] then
+						config[k] = limits[k]
+					else
+						config[k] = c[k]
+					end
 				end
 			end
 		end

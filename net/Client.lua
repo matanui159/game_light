@@ -80,6 +80,9 @@ function Client:receive(data, peer)
 
 	if data.a == "p" or (data.a == "=" and self:isRemote(player)) then
 		player.body:setPosition(data.x, data.y)
+		player.lerp.x = data.x
+		player.lerp.y = data.y
+
 		local attack = player.controller.attack
 		if data.k then
 			attack.x = math.cos(data.k)

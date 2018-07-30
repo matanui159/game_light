@@ -9,10 +9,19 @@ local MenuScene = Object:extend()
 
 function MenuScene:new(game, font)
 	self.ip = TextBox(game, font, "ENTER IP...", 4, 1, 6)
+	self.ip.change = function()
+		self.join.text = "JOIN"
+	end
+
 	self.join = TextButton(game, font, "JOIN", 10, 1, 2)
 	self.join.action = function()
-		if pcall(game.host.connect, game.host, self.ip.input .. ":" .. Server.PORT) then
+		local ip = self.ip.input:gsub("%s+", "")
+		local part = "%d%d?%d?"
+		if ip:match(part .. "." .. part .. "." .. part .. "." .. part) then
+			game.host:connect(ip .. ":" .. Server.PORT)
 			self.join.text = "..."
+		else
+			self.join.text = "!!!"
 		end
 	end
 

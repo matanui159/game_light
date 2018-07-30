@@ -2,10 +2,11 @@ local TextButton = require("ui.TextButton")
 
 local TextBox = TextButton:extend()
 
-function TextBox:new(scene, font, place, x, y, width)
+function TextBox:new(scene, font, place, x, y, width, change)
 	TextBox.super.new(self, scene, font, "", x, y, width)
 	self.place = place
 	self.input = ""
+	self.change = change
 end
 
 function TextBox:update()
@@ -30,6 +31,9 @@ function TextBox:textinput(text)
 		self.input = self.input:sub(1, -2)
 	elseif #self.input < 18 then
 		self.input = self.input .. text
+	end
+	if self.change then
+		self.change()
 	end
 end
 

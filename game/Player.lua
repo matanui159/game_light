@@ -144,7 +144,7 @@ function Player:draw(lerp)
 
 		love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, Player.RADIUS)
 		love.graphics.setColor(0, 0, 0)
-		love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, (1 - self.lerp.health * self.lerp.health) * Player.RADIUS)
+		love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, (1 - self.lerp.health * self.lerp.health) * Player.RADIUS * 0.9)
 		love.graphics.setColor(1, 1, 1)
 	end
 end
