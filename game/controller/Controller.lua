@@ -9,7 +9,6 @@ function Controller:join()
 end
 
 function Controller:leave()
-
 end
 
 function Controller:update(menu)

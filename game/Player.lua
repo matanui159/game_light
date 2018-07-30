@@ -33,6 +33,10 @@ function Player:new(world, spark, x, y, index)
 	end
 end
 
+function Player:resize()
+	self.spark:resize()
+end
+
 function Player:calcLaser(callback)
 	local x = self.lerp.x
 	local y = self.lerp.y

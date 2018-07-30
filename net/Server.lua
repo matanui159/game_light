@@ -13,7 +13,7 @@ Server.PORT = 2852
 function Server:new()
 	Server.super.new(self, Server.PORT)
 	for _, player in ipairs(self.players) do
-		player.controller = BotController()
+		player.controller = BotController(self.map, player)
 	end
 	self:newGame()
 end
@@ -54,6 +54,11 @@ function Server:newGame()
 		if player.peer then
 			player.ignore = true
 		end
+
+		local controller = player.controller
+		if controller:is(BotController) then
+			controller.map = self.map
+		end
 	end
 end
 
@@ -76,9 +81,10 @@ end
 function Server:disconnect(peer)
 	for i, player in ipairs(self.players) do
 		if player.peer == peer then
-			player.controller = BotController()
-			player.peer = nil
-			player.ignore = false
+			self:receive({
+				p = i,
+				a = "-"
+			}, peer)
 		end
 	end
 end
@@ -87,7 +93,7 @@ function Server:receive(data, peer)
 	local player = self.players[data.p]
 
 	if data.a == "-" then
-		player.controller = BotController()
+		player.controller = BotController(self.map, player)
 		player.peer = nil
 		player.ignore = false
 	end

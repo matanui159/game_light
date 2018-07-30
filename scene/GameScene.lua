@@ -67,9 +67,11 @@ end
 
 function GameScene:resize()
 	self.post:resize()
-	self.spark:resize()
-
 	self.ui.font:resize()
+
+	for i, player in ipairs(self.players) do
+		player:resize()
+	end
 end
 
 function GameScene:update(dt)
