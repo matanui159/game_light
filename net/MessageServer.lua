@@ -6,12 +6,10 @@ function MessageServer:new(callback)
 	self.priority = 0
 	self.timer = 0.9
 	self.q = {}
-	self.rank = 0
-
+	self.rank = -1
+	
 	self:queue("WELCOME TO LAZER BULB")
-	self:queueColor("PRESS ENTER TO JOIN", 2)
 	self:queueColor("MADE BY JOSHUA MINTER", 1)
-	self:queueColor("PRESS A TO JOIN", 3)
 	self:queueColor("MUSIC BY BENJAMIN TISSOT", 4)
 end
 
@@ -32,6 +30,9 @@ function MessageServer:queue(msg, color, priority)
 	}
 
 	for i, v in ipairs(self.q) do
+		if v.text == msg then
+			return
+		end
 		if priority > v.priority then
 			table.insert(self.q, i, m)
 			return
@@ -57,9 +58,14 @@ function MessageServer:update(dt)
 		else
 			self.rank = self.rank + 1
 			if self.rank > 4 then
-				self.rank = 1
+				self.rank = 0
 			end
-			return self.rank
+			if self.rank == 0 then
+				self:queue("PRESS ENTER TO JOIN")
+				self:queue("PRESS A TO JOIN")
+			else
+				return self.rank
+			end
 		end
 	end
 	return 0

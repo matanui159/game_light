@@ -24,9 +24,19 @@ function GameScene:new(config)
 	self.ui.font = Font(self)
 	self.ui.menu = MenuButton(self, self.ui.font)
 	self.message = MessageClient(self.ui.font)
+	
+	self.music = love.audio.newSource("assets/audio/music.mp3", "stream")
+	self.music:setLooping(true)
+	self.music:play()
 
 	self.lerp = Lerp()
 	self.lerp.fade = 1
+
+	for i, player in ipairs(self.players) do
+		player.sound = love.audio.newSource("assets/audio/lazer.ogg", "static")
+		player.sound:setLooping(true)
+		player.sound:setVolume(0.5)
+	end
 end
 
 function GameScene:connect(peer)
@@ -115,8 +125,9 @@ function GameScene:update(dt)
 			end
 
 			for i, player in ipairs(self.players) do
-				if player.controller:leave() then
-					table.insert(self.controllers, player.controller)
+				local controller = player.controller
+				if controller:leave() then
+					table.insert(self.controllers, controller)
 					player.controller = RemoteController()
 					self:send({
 						p = i,
@@ -130,6 +141,18 @@ function GameScene:update(dt)
 	end
 
 	self.message:update(dt)
+
+	for i, player in ipairs(self.players) do
+		local attack = player.controller.attack
+		if player.lerp.health <= 0 then
+			player.sound:pause()
+		elseif attack.x == 0 and attack.y == 0 then
+			player.sound:pause()
+		else
+			-- player.sound:setPitch(math.sin(love.timer.getTime()) * 0.25 + 0.75)
+			player.sound:play()
+		end
+	end
 
 	self.lerp:update()
 	if self:gameOver() then

@@ -38,6 +38,7 @@ end
 
 function Server:newGame()
 	local maps = {
+		"jm",
 		"main",
 		"paths",
 		"lines",
@@ -45,7 +46,7 @@ function Server:newGame()
 		"box",
 		"center",
 		"race",
-		"jm"
+		"22"
 	}
 
 	self.map:destroy()
@@ -171,23 +172,66 @@ function Server:update(dt)
 		table.sort(sorted, function(a, b)
 			return a.score > b.score
 		end)
-
-		local msg = {
-			"IN THE LEAD",
-			"SECOND",
-			"ALMOST LAST",
-			"LAST"
-		}
 		local player = sorted[rank]
-		self.message:queuePlayer(" IS " .. msg[rank] .. " WITH " .. player.score .. " POINTS", player.index)
-		self.message:update(0)
+
+		if rank == 1 or sorted[rank - 1].score ~= player.score then
+			if rank == 4 or sorted[rank + 1].score ~= player.score then
+				if rank == 4 and math.random(5) > 1 then
+					local msg = {
+						" IS LOSING ALOT",
+						" IS THE WORST",
+						" PROBABLY PLAYS SUPPORT",
+						" HAS NO SKILL",
+						" DOES NOT KNOW HOW TO GAME",
+						" IS DYING ALOT",
+						" IS REALLY BAD AT THIS GAME",
+						" DOES NOT KNOW HOW LAZERS WORK",
+						" IS PROBABLY A CONSOLE PEASANT",
+						" IS PROBABLY AN OUTSIDE PERSON, EW",
+						" PROBABLY PLAYS ROBLOX",
+						" IS REALLY GOOD, JUST KIDDING HE ISN'T",
+						" IS REALLY GOOD, JUST KIDDING SHE ISN'T",
+						" STILL USES WOODEN TOOLS"
+					}
+					self.message:queuePlayer(msg[math.random(#msg)], player.index, 3)
+				else
+					local pos = {
+						"IN THE LEAD",
+						"SECOND",
+						"ALMOST LAST",
+						"LAST"
+					}
+					local points = " POINTS"
+					if player.score == 1 then
+						points = " POINT"
+					end
+					local msg = " IS " .. pos[rank] .. " WITH " .. player.score .. points
+					self.message:queuePlayer(msg, player.index)
+				end
+			end
+		end
 	end
 
 	local over, winner = self:gameOver()
 	if over then
 		if self.end_timer == 0 then
 			if winner then
-				self.message:queuePlayer(" WON A ROUND", winner.index, 3)
+				local msg = {
+					" WON A ROUND",
+					" IS THE BEST",
+					" IS THE REAL MVP",
+					" HAZ SKILLZ",
+					" IS BADASS, I LIKE BADASS",
+					" IS MURDURING EVERYONE",
+					" IS REALLY GOOD AT THIS GAME",
+					" KNOWS HOW TO HANDLE LAZERS",
+					" IS GOD LIKE",
+					" IS READY FOR THE REAL WORLD",
+					" PROBABLY PLAYS DARK SOULS",
+					" KNEW THE CAKE WAS A LIE",
+					" IS ALWAYS THE FIRST ONE TO FIND DIAMONDS",
+				}
+				self.message:queuePlayer(msg[math.random(#msg)], winner.index, 3)
 				winner.score = winner.score + 1
 			end
 		end

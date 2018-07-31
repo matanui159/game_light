@@ -119,18 +119,20 @@ end
 function BotController:bot(x, y)
 	local mx, my = self:randomBot()
 	if x == nil or y == nil then
-		if math.random(10) > 1 then
-			local count = 0
-			self:getPlayers(function()
-				count = count + 1
-			end)
+		local count = 0
+		self:getPlayers(function()
+			count = count + 1
+		end)
 
-			if count > 0 then
-				if count == 1 or self.player.index <= 2 then
-					mx, my = self:attackBot()
-				elseif self.player.index == 3 then
-					mx, my = self:defendBot()
-				end
+		if count == 1 then
+			if math.random(2) == 1 then
+				mx, my = self:attackBot()
+			end
+		elseif count > 0 then
+			if self.player.index <= 2 then
+				mx, my = self:attackBot()
+			elseif self.player.index == 3 then
+				mx, my = self:defendBot()
 			end
 		end
 	else

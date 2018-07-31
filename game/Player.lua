@@ -127,10 +127,10 @@ function Player:update(dt, menu)
 		else
 			self.lerp.attack = nil
 		end
+	end
 
-		if self.spark then
-			self.spark:update(dt)
-		end
+	if self.spark then
+		self.spark:update(dt)
 	end
 end
 
@@ -146,10 +146,6 @@ function Player:draw(lerp)
 			end)
 		end
 
-		if self.spark then
-			self.spark:draw(lerp)
-		end
-
 		love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, Player.RADIUS)
 		love.graphics.setColor(0, 0, 0)
 		love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, (1 - self.lerp.health * self.lerp.health) * Player.RADIUS * 0.97)
@@ -159,6 +155,10 @@ function Player:draw(lerp)
 			print("DEBUGGG")
 			self.controller:debugDraw()
 		end
+	end
+
+	if self.spark then
+		self.spark:draw(lerp)
 	end
 end
 
