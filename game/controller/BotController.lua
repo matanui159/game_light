@@ -100,7 +100,7 @@ function BotController:update()
 		end)
 
 		if close.player then
-			local angle = math.atan2(close.dy, close.dx) + math.sin(love.timer.getTime()) / 10
+			local angle = math.atan2(close.dy, close.dx) + math.random() / 5 - 0.1
 			self.attack.x = math.cos(angle)
 			self.attack.y = math.sin(angle)
 		else

@@ -35,6 +35,7 @@ function GameScene:new(config)
 	for i, player in ipairs(self.players) do
 		player.sound = love.audio.newSource("assets/audio/lazer.ogg", "static")
 		player.sound:setLooping(true)
+		player.sound:setPitch(i * 0.5)
 		player.sound:setVolume(0.5)
 	end
 end
