@@ -72,6 +72,8 @@ function GameScene:resize()
 	for i, player in ipairs(self.players) do
 		player:resize()
 	end
+	
+	collectgarbage()
 end
 
 function GameScene:update(dt)

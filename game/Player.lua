@@ -114,6 +114,7 @@ function Player:update(dt, menu)
 						player.lerp.x = -1
 						player.lerp.y = -1
 					end
+					player.controller:damage(x2, y2)
 				end
 			end)
 		else
@@ -146,6 +147,11 @@ function Player:draw(lerp)
 		love.graphics.setColor(0, 0, 0)
 		love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, (1 - self.lerp.health * self.lerp.health) * Player.RADIUS * 0.9)
 		love.graphics.setColor(1, 1, 1)
+
+		if config.debug == 2 then
+			print("DEBUGGG")
+			self.controller:debugDraw()
+		end
 	end
 end
 

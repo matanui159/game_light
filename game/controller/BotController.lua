@@ -2,27 +2,18 @@ local Controller = require("game.controller.Controller")
 
 local BotController = Controller:extend()
 
-function BotController:new(map, all_players, player)
+function BotController:new(world, map, all_players, player)
 	BotController.super.new(self)
+	self.world = world
 	self.map = map
 	self.all_players = all_players
 	self.player = player
+	self.timer = 0
 	self.pos = {
 		x = math.floor(player.lerp.x),
 		y = math.floor(player.lerp.y)
 	}
 	self:bot()
-	self.stop = false
-end
-
-function BotController:update()
-	local x = math.floor(self.player.lerp.x)
-	local y = math.floor(self.player.lerp.y)
-	if x ~= self.pos.x or y ~= self.pos.y then
-		self.pos.x = x
-		self.pos.y = y
-		self:bot()
-	end
 end
 
 function BotController:sign(val)
@@ -30,18 +21,6 @@ function BotController:sign(val)
 		return -1
 	else
 		return 1
-	end
-end
-
-function BotController:setMove(x, y)
-	if x == -self.move.x and y == -self.move.y then
-		return false
-	elseif self.map:getTile(self.pos.x + x, self.pos.y + y) then
-		return false
-	else
-		self.move.x = x
-		self.move.y = y
-		return true
 	end
 end
 
@@ -68,20 +47,97 @@ function BotController:getClosest()
 	return close
 end
 
-function BotController:bot()
-	local other = false
-	self:getPlayers(function()
-		other = true
-	end)
+function BotController:setMove(x, y)
+	if x == -self.move.x and y == -self.move.y then
+		return false
+	elseif self.map:getTile(self.pos.x + x, self.pos.y + y) then
+		return false
+	else
+		self.move.x = x
+		self.move.y = y
+		return true
+	end
+end
 
-	local mx, my = self:attackBot()
-	if self.player.index == 3 then
-		mx, my = self:defendBot()
-	elseif not other or self.player.index == 4 then
-		mx, my = self:randomBot()
+function BotController:update()
+	local x = math.floor(self.player.lerp.x)
+	local y = math.floor(self.player.lerp.y)
+	if x ~= self.pos.x or y ~= self.pos.y then
+		self.pos.x = x
+		self.pos.y = y
+		self:bot()
 	end
 
-	mx, my = self:randomBot()
+	self.timer = self.timer + 1
+	if self.timer == 10 then
+		local close = {}
+		self:getPlayers(function(player)
+			local hit = true
+			self.world:rayCast(
+				self.player.lerp.x,
+				self.player.lerp.y,
+				player.lerp.x,
+				player.lerp.y,
+				function(fixture)
+					if fixture:getUserData() ~= player then
+						hit = false
+					end
+					return -1
+				end
+			)
+
+			if hit then
+				local dx = player.lerp.x - self.player.lerp.x
+				local dy = player.lerp.y - self.player.lerp.y
+				local dist = math.sqrt(dx * dx + dy * dy)
+				if not close.dist or dist < close.dist then
+					close.dist = dist
+					close.dx = dx
+					close.dy = dy
+					close.player = player
+				end
+			end
+		end)
+
+		if close.player then
+			local angle = math.atan2(close.dy, close.dx) + math.sin(love.timer.getTime()) / 10
+			self.attack.x = math.cos(angle)
+			self.attack.y = math.sin(angle)
+		else
+			self.attack.x = 0
+			self.attack.y = 0
+		end
+
+		self.timer = 0
+	end
+end
+
+function BotController:damage(x, y)
+	self:bot(x, y)
+end
+
+function BotController:bot(x, y)
+	local mx, my = self:randomBot()
+	if x == nil or y == nil then
+		if math.random(20) > 1 then
+			local count = 0
+			self:getPlayers(function()
+				count = count + 1
+			end)
+
+			if count > 0 then
+				if count == 1 or self.player.index <= 2 then
+					mx, my = self:attackBot()
+				elseif self.player.index == 3 then
+					mx, my = self:defendBot()
+				end
+			end
+		end
+	else
+		self:setMove(0, 0)
+		mx = self.player.lerp.x - x
+		my = self.player.lerp.y - y
+	end
 
 	local use_x = math.random() * (mx + my) < my
 	mx = self:sign(mx)

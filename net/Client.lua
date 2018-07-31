@@ -72,6 +72,7 @@ function Client:receive(data, peer)
 	if data.a == "m" then
 		self.map:destroy()
 		self.map = Map(self.world, data.m)
+		collectgarbage()
 	end
 
 	if data.a == "+" then

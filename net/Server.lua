@@ -13,7 +13,7 @@ Server.PORT = 2852
 function Server:new()
 	Server.super.new(self, Server.PORT)
 	for _, player in ipairs(self.players) do
-		player.controller = BotController(self.map, self.players, player)
+		player.controller = BotController(self.world, self.map, self.players, player)
 	end
 	self:newGame()
 end
@@ -27,7 +27,18 @@ function Server:sendMap(peer)
 end
 
 function Server:newGame()
-	self.map = Map(self.world, "main")
+	local maps = {
+		"main",
+		"paths",
+		"lines",
+		"dots",
+		"box",
+		"center",
+		"race"
+	}
+
+	self.map:destroy()
+	self.map = Map(self.world, maps[math.random(#maps)])
 	self:sendMap()
 
 	for i, player in ipairs(self.players) do
@@ -60,6 +71,8 @@ function Server:newGame()
 			controller.map = self.map
 		end
 	end
+
+	collectgarbage()
 end
 
 function Server:isRemote(player)
@@ -93,7 +106,7 @@ function Server:receive(data, peer)
 	local player = self.players[data.p]
 
 	if data.a == "-" then
-		player.controller = BotController(self.map, self.players, player)
+		player.controller = BotController(self.world, self.map, self.players, player)
 		player.peer = nil
 		player.ignore = false
 	end

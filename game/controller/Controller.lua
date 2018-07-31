@@ -20,4 +20,7 @@ function Controller:update(menu)
 	end
 end
 
+function Controller:damage()
+end
+
 return Controller

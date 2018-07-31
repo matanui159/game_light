@@ -14,7 +14,7 @@ function Config:new()
 		fullscreen = 2,
 		msaa = 5,
 		bloom = 5,
-		spark = 5,
+		spark = 5
 	}
 
 	local data = love.filesystem.read("config")
