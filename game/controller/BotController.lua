@@ -119,7 +119,7 @@ end
 function BotController:bot(x, y)
 	local mx, my = self:randomBot()
 	if x == nil or y == nil then
-		if math.random(20) > 1 then
+		if math.random(10) > 1 then
 			local count = 0
 			self:getPlayers(function()
 				count = count + 1

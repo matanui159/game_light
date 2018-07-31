@@ -11,6 +11,13 @@ Player.COLORS = {
 	{1, 1, 0}
 }
 
+Player.NAMES = {
+	"ROSE",
+	"LEAF",
+	"AQUA",
+	"KING"
+}
+
 function Player:new(world, spark, x, y, index)
 	self.lerp = Lerp()
 	self.lerp.x = x
@@ -145,7 +152,7 @@ function Player:draw(lerp)
 
 		love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, Player.RADIUS)
 		love.graphics.setColor(0, 0, 0)
-		love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, (1 - self.lerp.health * self.lerp.health) * Player.RADIUS * 0.9)
+		love.graphics.ellipse("fill", self.lerp.x, self.lerp.y, (1 - self.lerp.health * self.lerp.health) * Player.RADIUS * 0.97)
 		love.graphics.setColor(1, 1, 1)
 
 		if config.debug == 2 then

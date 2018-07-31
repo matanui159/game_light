@@ -105,16 +105,18 @@ end
 
 function Client:gameOver()
 	local other = false
+	local winner = nil
 	for i, player in ipairs(self.players) do
 		if player.lerp.health > 0 then
 			if other then
 				return false
 			else
 				other = true
+				winner = player
 			end
 		end
 	end
-	return true
+	return true, winner
 end
 
 function Client:update(dt)

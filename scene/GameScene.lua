@@ -1,5 +1,6 @@
 local Client = require("net.Client")
 local Server = require("net.Server")
+local MessageClient = require("net.MessageClient")
 
 local Post = require("fx.Post")
 local Spark = require("fx.Spark")
@@ -22,6 +23,10 @@ function GameScene:new(config)
 	self.ui = {}
 	self.ui.font = Font(self)
 	self.ui.menu = MenuButton(self, self.ui.font)
+	self.message = MessageClient(self.ui.font)
+
+	self.lerp = Lerp()
+	self.lerp.fade = 1
 end
 
 function GameScene:connect(peer)
@@ -49,6 +54,13 @@ function GameScene:disconnect(peer)
 		self.server = Server()
 		self.local_peer = self.host:connect("127.0.0.1:" .. self.server.port)
 	end
+end
+
+function GameScene:receive(data, peer)
+	if data.a == "z" then
+		self.message:recvMessage(data.z)
+	end
+	GameScene.super.receive(self, data, peer)
 end
 
 function GameScene:calcTransform()
@@ -95,7 +107,8 @@ function GameScene:update(dt)
 					table.insert(self.next_controllers, table.remove(self.controllers, i))
 					self:send({
 						p = 0,
-						a = "+"
+						a = "+",
+						k = controller:is(KeyboardController)
 					})
 					break
 				end
@@ -115,6 +128,21 @@ function GameScene:update(dt)
 
 		self.ui.menu:update()
 	end
+
+	self.message:update(dt)
+
+	self.lerp:update()
+	if self:gameOver() then
+		self.lerp.fade = self.lerp.fade + dt
+		if self.lerp.fade > 1 then
+			self.lerp.fade = 1
+		end
+	else
+		self.lerp.fade = self.lerp.fade - 3 * dt
+		if self.lerp.fade < 0 then
+			self.lerp.fade = 0
+		end
+	end
 end
 
 function GameScene:draw(lerp)
@@ -126,10 +154,17 @@ function GameScene:draw(lerp)
 		love.graphics.translate(tx, ty)
 		love.graphics.scale(scale)
 
+		self.message:draw(lerp)
+
 		for _, player in ipairs(self.players) do
 			player:draw(lerp)
 		end
 		self.map:draw()
+
+		self.lerp:setLerp(lerp)
+		love.graphics.setColor(1, 1, 1, self.lerp.fade)
+		love.graphics.rectangle("fill", 0, 0, 16, 9)
+		love.graphics.setColor(1, 1, 1)
 
 		if self.menu then
 			self.menu:draw()
