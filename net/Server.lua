@@ -45,8 +45,7 @@ function Server:newGame()
 		"dots",
 		"box",
 		"center",
-		"race",
-		"22"
+		"race"
 	}
 
 	self.map:destroy()
