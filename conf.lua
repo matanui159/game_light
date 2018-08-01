@@ -1,4 +1,5 @@
 function love.conf(config)
+	config.window.title = "Lazer Bulb"
 	config.window.width = 1280
 	config.window.height = 720
 	config.window.minwidth = 128
